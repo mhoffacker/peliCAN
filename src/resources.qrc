@@ -1,0 +1,17 @@
+<RCC>
+    <qresource prefix="/images">
+        <file>198px-Pelican_4995.jpg</file>
+    </qresource>
+    <qresource prefix="/icons">
+        <file>icons/lightbulb_off.png</file>
+        <file>icons/lightbulb.png</file>
+        <file>icons/bullet_green.png</file>
+        <file>icons/bullet_red.png</file>
+        <file>icons/book_open.png</file>
+        <file>icons/chart_line.png</file>
+        <file>icons/page_edit.png</file>
+        <file>icons/help.png</file>
+        <file>icons/information.png</file>
+        <file>icons/arrow_right.png</file>
+    </qresource>
+</RCC>
