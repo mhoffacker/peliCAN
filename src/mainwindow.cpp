@@ -34,7 +34,8 @@ MainWindow::MainWindow(QWidget *parent) :
 
     can = NULL;
 
-    ui->tableView->setModel(&rt_model);
+    ui->treeView->setModel(&rt_model);
+    ui->treeView->setUniformRowHeights(true);
 
     can_signals_root.setName("Loaded CAN Signals");
     st_model.SetSignalRoot(&can_signals_root);

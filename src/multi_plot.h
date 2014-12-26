@@ -7,6 +7,7 @@
 #include <qwt_plot_curve.h>
 
 #include <QList>
+#include <QLinkedList>
 #include <QGridLayout>
 
 class CPlot;
@@ -152,6 +153,18 @@ private:
      */
     QVector<double> v_y_scaled;
 
+    /*!
+     * \brief min_max_last_it Position of the latest inserted element
+     */
+    QLinkedList<double>::Iterator min_max_last_it;
+    /*!
+     * \brief min_max_it_list List of the iterators of the min/max list in the same order as v_y
+     */
+    QList< QLinkedList<double>::Iterator > min_max_it_list;
+    /*!
+     * \brief min_max_list Sorted list of the min/max values
+     */
+    QLinkedList<double> min_max_list;
 };
 
 /*!

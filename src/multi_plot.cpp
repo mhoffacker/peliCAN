@@ -106,7 +106,6 @@ void CAxis::rescalePlots(double y)
 
             foreach ( CPlot *p, plots)
             {
-                //p->setScale(-p->getMin(), f);
                 p->setScale(-_min, f);
             }
         }
@@ -222,17 +221,46 @@ QwtPlotCurve* CPlot::getCurve()
  */
 void CPlot::addValuePair(double x, double y)
 {
-    // Save the min value for shifting the plot up to set min value to zero
+    QLinkedList<double>::Iterator to_insert;
+
+    // Save the min value for shifting the plot up to set min/max value to initial sample
     if ( v_y.size() == 0 )
     {
         _min = y;
         _max = y;
+
+        // First element, add it and save the position for the next insertion
+        min_max_last_it = min_max_list.insert(min_max_list.end(), y);
+
+        // Save iterator in the same order as v_y
+        min_max_it_list.append(min_max_last_it);
+
     } else {
         if ( y < _min )
             _min = y;
 
         if ( y > _max )
             _max = y;
+
+        // Start for the insertion at the last element
+        to_insert = min_max_last_it;
+
+        // Find the first element that is smalle than the new one
+        // It will give the wrong position, since we insert before
+        // this element. The next while loop handles this
+        while ( y < *to_insert && to_insert != min_max_list.begin() )
+            to_insert--;
+
+        // Finds the first element that is bigger than the new one
+        // Insert before this element
+        while ( y >= *to_insert && to_insert != min_max_list.end() )
+            to_insert++;
+
+        // Add it and save the position for the next insertion
+        min_max_last_it = min_max_list.insert(to_insert, y);
+
+        // Save iterator in the same order as v_y
+        min_max_it_list.append(min_max_last_it);
     }
 
     v_x.append(x);
@@ -261,11 +289,13 @@ void CPlot::setScale(double delta_y, double fac_y)
     d_y = delta_y;
     f_y = fac_y;
 
-    v_y_scaled.clear();
+    QVector<double>::Iterator it = v_y_scaled.begin();
 
     foreach ( double y, v_y )
     {
-        v_y_scaled.append((y+d_y) * f_y);   // Scale to 0....1
+        // Replace every scaled value with the new one
+        *it = (y+d_y) * f_y;
+        it++;
     }
     curve->setSamples(v_x, v_y_scaled);
 }
@@ -290,15 +320,24 @@ void CPlot::remove_older(double t)
 
     while ( v_x.first() < t && !v_x.isEmpty())
     {
-        if ( v_y.first() <= _min )
-            calc_new_min_max = true;
+        if ( !calc_new_min_max )
+        {
+            if ( v_y.first() <= _min )
+                calc_new_min_max = true;
 
-        if ( v_y.first() >= _max )
-            calc_new_min_max = true;
+            if ( v_y.first() >= _max )
+                calc_new_min_max = true;
+        }
 
         v_y.erase(v_y.begin());
         v_y_scaled.erase(v_y_scaled.begin());
         v_x.erase(v_x.begin());
+
+        // Removes the element from the min/max list
+        QLinkedList<double>::Iterator to_remove;
+        to_remove = *min_max_it_list.begin();
+        min_max_list.erase(to_remove);
+        min_max_it_list.erase(min_max_it_list.begin());
 
     }
 
@@ -307,6 +346,7 @@ void CPlot::remove_older(double t)
 
     if ( calc_new_min_max )
     {
+        /*
         _min = v_y.first();
         _max = v_y.first();
 
@@ -318,6 +358,9 @@ void CPlot::remove_older(double t)
             if ( k > _max )
                 _max = k;
         }
+        */
+        _min = min_max_list.first();
+        _max = min_max_list.last();
 
         if ( axis != NULL )
         {
