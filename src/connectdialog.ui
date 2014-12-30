@@ -441,6 +441,19 @@
         </property>
        </item>
       </widget>
+      <widget class="QCheckBox" name="checkBox_LoopBack">
+       <property name="geometry">
+        <rect>
+         <x>190</x>
+         <y>150</y>
+         <width>121</width>
+         <height>20</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>Loopback mode</string>
+       </property>
+      </widget>
      </widget>
     </widget>
    </item>

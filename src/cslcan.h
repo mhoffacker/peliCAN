@@ -35,6 +35,8 @@
 
 #include <sys/time.h>
 
+#include <QtSerialPort/QSerialPort>
+
 class CSLCAN : public CCanComm
 {
     Q_OBJECT
@@ -44,7 +46,7 @@ public:
     ~CSLCAN();
     bool open_can(QString can_device);
     void close_can();
-
+    bool send(int64_t id, bool ext, bool rtr, uint8_t dlc, uint8_t *data);
 
 protected:
     void run();
@@ -54,12 +56,10 @@ private:
 
     bool running;
 
-#if !defined(__WINDOWS__)
-    struct termios tio;
-    int tty_fd;
-#else
-    HANDLE tty_fd;
-#endif
+    QSerialPort serial;
+
+    int WriteString(QString &write, int timeout_ms = 0);
+    bool ReadChar(char *c, int timeout_ms = 0);
 
     QString _port;
     unsigned long _baudrate;
@@ -67,6 +67,7 @@ private:
     QString _parity;
     unsigned int _stopbits;
     unsigned long _canspeed;
+    bool _loopback;
 };
 
 #endif // CSLCAN_H

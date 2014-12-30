@@ -5,15 +5,26 @@
 #-------------------------------------------------
 
 QT       += core gui script 
-
 CONFIG	 += qwt
 
-DEFINES  += USE_SOCKET_CAN
-
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
+greaterThan(QT_MAJOR_VERSION, 4): QT += serialport
+lessThan(QT_MAJOR_VERSION, 5): CONFIG += serialport
 
 TARGET = peliCAN
 TEMPLATE = app
+MOC_DIR = moc
+OBJECTS_DIR = obj
+UI_DIR = ui
+
+unix {
+    DEFINES  += USE_SOCKET_CAN
+}
+
+win32 {
+    DEFINES  += __WINDOWS__
+    INCLUDEPATH += . c:\qwt-6.1.2\src
+}
 
 
 SOURCES += main.cpp\
@@ -31,7 +42,10 @@ SOURCES += main.cpp\
     dialograw2readable.cpp \
     multi_plot.cpp \
     cslcan.cpp \
-    global_config.cpp
+    global_config.cpp \
+    send_widget.cpp \
+    dialogsenddata.cpp \
+    send_widget_special.cpp
 
 HEADERS  += mainwindow.h \
     csocketcan.h \
@@ -47,13 +61,19 @@ HEADERS  += mainwindow.h \
     dialograw2readable.h \
     multi_plot.h \
     cslcan.h \
-    global_config.h
+    global_config.h \
+    send_widget.h \
+    dialogsenddata.h \
+    send_widget_special.h
 
 FORMS    += mainwindow.ui \
     connectdialog.ui \
     aboutdialog.ui \
     dialogsignaltree.ui \
-    dialograw2readable.ui
+    dialograw2readable.ui \
+    send_widget.ui \
+    dialogsenddata.ui \
+    send_widget_special.ui
 
 RESOURCES += \
     resources.qrc

@@ -13,5 +13,6 @@
         <file>icons/help.png</file>
         <file>icons/information.png</file>
         <file>icons/arrow_right.png</file>
+        <file>icons/transmit.png</file>
     </qresource>
 </RCC>

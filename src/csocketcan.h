@@ -42,7 +42,7 @@ public:
     ~CSocketCAN();
     bool open_can(QString can_device);
     void close_can();
-
+    bool send(int64_t id, bool ext, bool rtr, uint8_t dlc, uint8_t *data);
 
 protected:
     void run();

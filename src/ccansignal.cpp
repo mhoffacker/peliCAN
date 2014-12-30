@@ -40,6 +40,14 @@ CCANSignal::~CCANSignal()
         delete disp;
 }
 
+QString CCANSignal::getUnit()
+{
+    if ( disp != NULL )
+        return disp->getUnit();
+
+    return QString("");
+}
+
 void CCANSignal::setColor(QPen *pen)
 {
     color = pen;

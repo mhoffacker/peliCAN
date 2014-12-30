@@ -132,4 +132,9 @@ void CSocketCAN::run()
     }
 }
 
+bool CSocketCAN::send(int64_t id, bool ext, bool rtr, uint8_t dlc, uint8_t *data)
+{
+    return false;
+}
+
 #endif

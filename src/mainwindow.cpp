@@ -34,22 +34,31 @@ MainWindow::MainWindow(QWidget *parent) :
 
     can = NULL;
 
-    ui->treeView->setModel(&rt_model);
+    rt_model = new raw_tree_model(this);
+    st_model = new signal_tree_model(this);
+
+    can_signals_root = new CCANSignal();
+    can_signals_root->setName("Loaded CAN Signals");
+    st_model->SetSignalRoot(can_signals_root);
+
+    ui->treeView->setModel(rt_model);
     ui->treeView->setUniformRowHeights(true);
 
-    can_signals_root.setName("Loaded CAN Signals");
-    st_model.SetSignalRoot(&can_signals_root);
 
     logging_active = false;
     log_stream = NULL;
     logfile = NULL;
 
+    dialog_signal_tree = new DialogSignalTree(this);
+    dialog_send_data = new DialogSendData(this);
 }
 
 MainWindow::~MainWindow()
 {
-    can_signals_root.clear();   // Clear items
+    can_signals_root->clear();   // Clear items
     clear_can_raw_view_filter();
+
+    delete can_signals_root;
 
     delete ui;
 }
@@ -72,11 +81,11 @@ void MainWindow::can_received(const decoded_can_frame &frame)
 
     // Search every signal
 
-    foreach (CCANSignal* item_group, *can_signals_root.getChildren() )
+    foreach (CCANSignal* item_group, *can_signals_root->getChildren() )
     {
         foreach (CCANSignal* item_signal, *item_group->getChildren())
         {
-            if ( item_signal->process_frame(frame, dialog_signal_tree.getUpdateRate()) )
+            if ( item_signal->process_frame(frame, dialog_signal_tree->getUpdateRate()) )
             {
                 // If the frame is accepted, save the name for the raw view window.
                 // Only the first one is saved.
@@ -84,18 +93,18 @@ void MainWindow::can_received(const decoded_can_frame &frame)
                     signal_name = item_signal->getName();
 
                 // Update view
-                st_model.DataHasChanged(item_signal);
+                st_model->DataHasChanged(item_signal);
             }
         }
     }
-    dialog_signal_tree.getGraph()->update();
+    dialog_signal_tree->getGraph()->update();
 
 
     foreach (CCANFilter* item, can_raw_view_filter) {
         matched = item->match(frame);
         if ( matched )
         {
-            rt_model.insert_data(signal_name, frame);
+            rt_model->insert_data(signal_name, frame);
 
             if ( logging_active )
             {
@@ -135,6 +144,8 @@ bool MainWindow::online(bool o, QString port)
             ui->label_online->setText("Connection: Online on "+port);
             ui->action_Load_signal_definition->setEnabled(false);
             ui->action_RAW_csv_to_readable_csv->setEnabled(false);
+
+            dialog_send_data->setCanComm(can);
             return true;
         } else {
             return false;
@@ -143,6 +154,8 @@ bool MainWindow::online(bool o, QString port)
     } else {
         if ( can == NULL )
             return false;
+
+        dialog_send_data->setCanComm(NULL);
 
         disconnect(can, SIGNAL(received(const decoded_can_frame&)),
                     this, SLOT(can_received(const decoded_can_frame&)));
@@ -170,6 +183,7 @@ void MainWindow::on_action_Online_triggered(bool checked)
         ConnectDialog d(this);
         d.exec();
         can = d.can;
+
         if ( d.result() == QDialog::Accepted )
         {
             if ( !online(true, d.port) )
@@ -179,6 +193,7 @@ void MainWindow::on_action_Online_triggered(bool checked)
                 msgBox.exec();
                 ui->action_Online->setChecked(false);
             }
+
         } else {
             ui->action_Online->setChecked(false);
         }
@@ -297,7 +312,7 @@ void MainWindow::XML_Read_Signal(CCANSignal *sig_group, QXmlStreamReader &xmlStr
                     CPlot *new_plot = NULL;
                     if ( attributes.hasAttribute("scale") )
                     {
-                        new_plot = new_sig->addPlot(dialog_signal_tree.getGraph());
+                        new_plot = new_sig->addPlot(dialog_signal_tree->getGraph());
                         new_plot->setAxis(AxisHash[attributes.value("scale").toString()]);
                     }
                     if ( attributes.hasAttribute("color") )
@@ -327,44 +342,44 @@ void MainWindow::XML_Read_Signal(CCANSignal *sig_group, QXmlStreamReader &xmlStr
                         if ( attributes.hasAttribute("display_mask") )
                                 dm = attributes.value("display_mask").toString();
 
-                        if ( t == "hex")
+                        if ( t.toLower() == "hex")
                         {
                             sd = new CSignalDisplayHex();
                             sd->setParam(dm);
-                        } else if ( t == "int16" )
+                        } else if ( t.toLower() == "int16" )
                         {
                             sd = new CSignalDisplayInt16();
                             sd->setParam(dm);
-                        } else if ( t == "uint16" )
+                        } else if ( t.toLower() == "uint16" )
                         {
                             sd = new CSignalDisplayUInt16();
                             sd->setParam(dm);
-                        } else if ( t == "int32" )
+                        } else if ( t.toLower() == "int32" )
                         {
                             sd = new CSignalDisplayInt32();
                             sd->setParam(dm);
-                        } else if ( t == "uint32" )
+                        } else if ( t.toLower() == "uint32" )
                         {
                             sd = new CSignalDisplayUInt32();
                             sd->setParam(dm);
-                        } else if ( t == "int64" )
+                        } else if ( t.toLower() == "int64" )
                         {
                             sd = new CSignalDisplayInt64();
                             sd->setParam(dm);
-                        } else if ( t == "uint64" )
+                        } else if ( t.toLower() == "uint64" )
                         {
                             sd = new CSignalDisplayUInt64();
                             sd->setParam(dm);
-                        } else if ( t == "float" )
+                        } else if ( t.toLower() == "float" )
                         {
                             sd = new CSignalDisplayFloat();
                             sd->setParam(dm);
-                        } else if ( t == "script" )
+                        } else if ( t.toLower() == "script" )
                         {
                             sd = new CSignalDisplayScript();
                         }
 
-                        if ( attributes.hasAttribute("unit") )
+                        if ( attributes.hasAttribute("unit") && sd != NULL )
                             sd->setUnit(attributes.value("unit").toString());
 
                     }
@@ -392,7 +407,8 @@ void MainWindow::XML_Read_Signal(CCANSignal *sig_group, QXmlStreamReader &xmlStr
 
             if ( xmlStream.name() == "display" )
             {
-                new_sig->setSignalDisplay(sd);
+                if ( sd != NULL )
+                    new_sig->setSignalDisplay(sd);
                 sd = NULL;
             }
 
@@ -418,9 +434,9 @@ void MainWindow::XML_Read_Scales(QXmlStreamReader &xmlStream)
                 if ( attributes.hasAttribute("position") )
                 {
                     if ( attributes.value("position").toString() == "left" )
-                        a = dialog_signal_tree.getGraph()->addAxisLeft();
+                        a = dialog_signal_tree->getGraph()->addAxisLeft();
                     else
-                        a = dialog_signal_tree.getGraph()->addAxisRight();
+                        a = dialog_signal_tree->getGraph()->addAxisRight();
 
                     if ( attributes.hasAttribute("text") && a != NULL )
                         a->getScale()->setTitle(attributes.value("text").toString());
@@ -439,12 +455,95 @@ void MainWindow::XML_Read_Scales(QXmlStreamReader &xmlStream)
     }
 }
 
+void MainWindow::XML_Read_Sender(QXmlStreamReader &xmlStream)
+{
+    while ( !xmlStream.atEnd() && !xmlStream.hasError() )
+    {
+        QXmlStreamReader::TokenType token = xmlStream.readNext();
+
+        if ( token == QXmlStreamReader::StartElement )
+        {
+            QXmlStreamAttributes attributes = xmlStream.attributes();
+            if ( xmlStream.name() == "signal" )
+            {
+                send_widget_special *a = NULL;
+
+                if ( attributes.hasAttribute("name") )
+                {
+                    a = dialog_send_data->AddSpecialWidget();
+                    a->setName(attributes.value("name").toString());
+
+                    if ( attributes.hasAttribute("id") )
+                        a->setID(attributes.value("id").toString().toULongLong(0, 16));
+                    else
+                        a->setID(0);
+
+                    if ( attributes.hasAttribute("eid") )
+                        a->setEXT(attributes.value("eid").toString()=="true");
+                    else
+                        a->setEXT(false);
+
+                    if ( attributes.hasAttribute("dlc") )
+                        a->setDLC(attributes.value("dlc").toString().toInt(0, 16));
+                    else
+                        a->setDLC(0);
+
+                    if ( attributes.hasAttribute("send_mask") )
+                        a->setDataMask(attributes.value("send_mask").toString().toULongLong(0, 16));
+                    else
+                        a->setDataMask(0);
+
+                    if ( attributes.hasAttribute("data") )
+                        a->setData(attributes.value("data").toString().toULongLong(0, 16));
+                    else
+                        a->setData(0);
+
+                    if ( attributes.hasAttribute("type") )
+                    {
+                        if ( attributes.value("type").toString() == "float" )
+                            a->setType(send_widget_special::FLOAT);
+                        else if ( attributes.value("type").toString() == "int16" )
+                            a->setType(send_widget_special::INT16);
+                        else if ( attributes.value("type").toString() == "uint16" )
+                            a->setType(send_widget_special::UINT16);
+                        else if ( attributes.value("type").toString() == "int32" )
+                            a->setType(send_widget_special::INT32);
+                        else if ( attributes.value("type").toString() == "uint32" )
+                            a->setType(send_widget_special::UINT32);
+                        else if ( attributes.value("type").toString() == "int64" )
+                            a->setType(send_widget_special::INT64);
+                        else if ( attributes.value("type").toString() == "uint64" )
+                            a->setType(send_widget_special::UINT64);
+                        else if ( attributes.value("type").toString() == "hex" )
+                            a->setType(send_widget_special::HEX);
+                        else
+                            a->setType(send_widget_special::UNDEFINED);
+                    } else {
+                        a->setType(send_widget_special::UNDEFINED);
+                    }
+                }
+            }
+        }
+
+        if ( token == QXmlStreamReader::EndElement )
+        {
+            if ( xmlStream.name() == "sender" )
+                return;
+        }
+    }
+}
+
 bool MainWindow::XML_Read_Settings(QIODevice *device)
 {
     QXmlStreamReader xmlStream(device);
 
     clear_can_raw_view_filter();
-    can_signals_root.clear();
+    can_signals_root->clear();
+
+    foreach ( CAxis *a, AxisHash )
+    {
+        dialog_signal_tree->getGraph()->removeAxis(a);
+    }
 
     AxisHash.clear();
 
@@ -466,6 +565,9 @@ bool MainWindow::XML_Read_Settings(QIODevice *device)
             if ( xmlStream.name() == "raw_view" )
                 XML_Read_Raw_View(xmlStream);
 
+            if ( xmlStream.name() == "sender" )
+                XML_Read_Sender(xmlStream);
+
             if ( xmlStream.name() == "signal_group")
             {
                 CCANSignal *sig_group = new CCANSignal();
@@ -476,13 +578,11 @@ bool MainWindow::XML_Read_Settings(QIODevice *device)
 
                 XML_Read_Signal(sig_group, xmlStream);
 
-                can_signals_root.addChild(sig_group);
-                sig_group->setParent(&can_signals_root);
+                can_signals_root->addChild(sig_group);
+                sig_group->setParent(can_signals_root);
             }
         }
     }
-
-    AxisHash.clear();
 
     if ( xmlStream.hasError() )
     {
@@ -511,9 +611,9 @@ void MainWindow::on_action_Load_signal_definition_triggered()
         ui->label_signal_def->setText("Signal definition: None, accepting all in raw-view.");
     } else {
         ui->label_signal_def->setText("Signal definition: "+fileName);
-        dialog_signal_tree.SetTreeModel(NULL);
-        dialog_signal_tree.SetTreeModel(&st_model);
-        dialog_signal_tree.ExpandTree();
+        dialog_signal_tree->SetTreeModel(NULL);
+        dialog_signal_tree->SetTreeModel(st_model);
+        dialog_signal_tree->ExpandTree();
     }
 
     file->close();
@@ -624,7 +724,8 @@ void MainWindow::closeEvent(QCloseEvent *bar)
     log(false);                 // Stop logging
     online(false, QString("")); // Close connection
 
-    dialog_signal_tree.close(); // Close signal tree dialog
+    dialog_signal_tree->close(); // Close signal tree dialog
+    dialog_send_data->close();   // Close send data dialog
 }
 
 void MainWindow::on_action_Quit_triggered()
@@ -637,7 +738,7 @@ void MainWindow::on_action_Data_Graph_triggered(bool checked)
 {
     Q_UNUSED(checked);
 
-    dialog_signal_tree.setVisible(!dialog_signal_tree.isVisible());
+    dialog_signal_tree->setVisible(!dialog_signal_tree->isVisible());
 }
 
 void MainWindow::on_action_RAW_csv_to_readable_csv_triggered()
@@ -709,7 +810,7 @@ void MainWindow::on_action_RAW_csv_to_readable_csv_triggered()
         for ( int i=0; i<8; i++ )
             frame.data[i] = list[6+i].toInt();
 
-        foreach (CCANSignal* item_group, *can_signals_root.getChildren() )
+        foreach (CCANSignal* item_group, *can_signals_root->getChildren() )
         {
             foreach (CCANSignal* item_signal, *item_group->getChildren())
             {
@@ -742,4 +843,9 @@ void MainWindow::on_action_RAW_csv_to_readable_csv_triggered()
 
     in_file.close();
     out_file.close();
+}
+
+void MainWindow::on_actionShow_Hide_send_signal_triggered()
+{
+    dialog_send_data->setVisible(!dialog_send_data->isVisible());
 }

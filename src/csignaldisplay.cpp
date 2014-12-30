@@ -99,7 +99,7 @@ bool CSignalDisplayNum::setParam(QString param)
 
     memset(filter, 0xFF, sizeof(filter));
 
-    long long tmp = param.toLongLong(&ok, 16);
+    qint64 tmp = param.toULongLong(&ok, 16);
 
     if ( ok )
     {

@@ -73,7 +73,7 @@ public:
      * \brief Gets the unit as QString
      * \return Unit as QString
      */
-    QString getUnit() { return disp->getUnit(); }
+    QString getUnit();
     /*!
      * \brief Sets the display entity for conversion raw->number
      * \param new_disp Pointer to display class

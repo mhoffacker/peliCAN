@@ -22,6 +22,8 @@
 #include <QThread>
 #include <QMetaType>
 #include <sys/time.h>
+#include <inttypes.h>
+
 #define CAN_MAX_DLEN 8
 
 
@@ -64,6 +66,8 @@ public:
 
     virtual bool open_can(QString can_device) = 0;
     virtual void close_can() = 0;
+
+    virtual bool send(int64_t id, bool ext, bool rtr, uint8_t dlc, uint8_t *data) = 0;
 
 signals:
     /*!

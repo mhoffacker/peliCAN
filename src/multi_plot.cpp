@@ -408,12 +408,14 @@ CGraph::CGraph(QWidget *w)
 
     xscale = new QwtScaleWidget(QwtScaleDraw::BottomScale, w);
 
-    x_d_sd.setDateFormat(QwtDate::Millisecond, "hh:mm:ss:zzz");
-    x_d_sd.setLabelAlignment(Qt::AlignTrailing);
-    x_d_sd.setLabelRotation(90);
+    x_d_sd = new QwtDateScaleDraw();
+
+    x_d_sd->setDateFormat(QwtDate::Millisecond, "hh:mm:ss:zzz");
+    x_d_sd->setLabelAlignment(Qt::AlignTrailing);
+    x_d_sd->setLabelRotation(90);
 
 
-    xscale->setScaleDraw(&x_d_sd);
+    xscale->setScaleDraw(x_d_sd);
 
 
     h = new QHBoxLayout();

@@ -114,22 +114,22 @@ void raw_tree_model::insert_data(QString name, const decoded_can_frame &frame)
 
     if ( frame.EFF )
     {
-        d->can_id = QString("(ext) 0x%1").arg(frame.can_id, 8, 16, QLatin1Char( '0' ));
+        d->can_id = QString("(ext) 0x%1").arg(frame.can_id, 8, 16, QLatin1Char( '0' )).toUpper();
     } else {
-        d->can_id = QString("0x%1").arg(frame.can_id, 3, 16, QLatin1Char( '0' ));
+        d->can_id = QString("0x%1").arg(frame.can_id, 3, 16, QLatin1Char( '0' )).toUpper();
     }
 
     d->can_dlc = QString("%1").arg(frame.can_dlc, 1, 10, QLatin1Char( '0' ));
 
     d->data = QString("%1 %2 %3 %4 %5 %6 %7 %8")
-                .arg(frame.data[0], 2, 16, QLatin1Char( '0' ))
-                .arg(frame.data[1], 2, 16, QLatin1Char( '0' ))
-                .arg(frame.data[2], 2, 16, QLatin1Char( '0' ))
-                .arg(frame.data[3], 2, 16, QLatin1Char( '0' ))
-                .arg(frame.data[4], 2, 16, QLatin1Char( '0' ))
-                .arg(frame.data[5], 2, 16, QLatin1Char( '0' ))
-                .arg(frame.data[6], 2, 16, QLatin1Char( '0' ))
-                .arg(frame.data[7], 2, 16, QLatin1Char( '0' ));
+                .arg(frame.data[0], 2, 16, QLatin1Char( '0' )).toUpper()
+                .arg(frame.data[1], 2, 16, QLatin1Char( '0' )).toUpper()
+                .arg(frame.data[2], 2, 16, QLatin1Char( '0' )).toUpper()
+                .arg(frame.data[3], 2, 16, QLatin1Char( '0' )).toUpper()
+                .arg(frame.data[4], 2, 16, QLatin1Char( '0' )).toUpper()
+                .arg(frame.data[5], 2, 16, QLatin1Char( '0' )).toUpper()
+                .arg(frame.data[6], 2, 16, QLatin1Char( '0' )).toUpper()
+                .arg(frame.data[7], 2, 16, QLatin1Char( '0' )).toUpper();
 
     my_data.append(d);
 

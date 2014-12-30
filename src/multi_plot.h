@@ -6,6 +6,7 @@
 #include <qwt_date_scale_draw.h>
 #include <qwt_plot_curve.h>
 
+
 #include <QList>
 #include <QLinkedList>
 #include <QGridLayout>
@@ -67,7 +68,7 @@ private:
     QHBoxLayout *h2;
 
 
-    QwtDateScaleDraw x_d_sd;
+    QwtDateScaleDraw *x_d_sd;
 
     /*!
      * \brief List of assigned plots

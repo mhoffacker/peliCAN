@@ -32,6 +32,8 @@
 #include "raw_tree_model.h"
 #include "signal_tree_model.h"
 #include "dialogsignaltree.h"
+#include "dialogsenddata.h"
+#include "send_widget_special.h"
 
 namespace Ui {
 class MainWindow;
@@ -64,21 +66,26 @@ private slots:
 
     void on_action_RAW_csv_to_readable_csv_triggered();
 
+    void on_actionShow_Hide_send_signal_triggered();
+
 private:
     Ui::MainWindow *ui;
 
     CCanComm *can;
-    CCANSignal can_signals_root;
+    CCANSignal *can_signals_root;
     QList<CCANFilter*> can_raw_view_filter;
 
-    raw_tree_model rt_model;
-    signal_tree_model st_model;
-    DialogSignalTree dialog_signal_tree;
+    raw_tree_model *rt_model;
+    signal_tree_model *st_model;
+
+    DialogSignalTree *dialog_signal_tree;
+    DialogSendData *dialog_send_data;
 
     QHash<QString, CAxis*> AxisHash;
     bool XML_Read_Settings(QIODevice* device);
     void XML_Read_Raw_View(QXmlStreamReader &xmlStream);
     void XML_Read_Scales(QXmlStreamReader &xmlStream);
+    void XML_Read_Sender(QXmlStreamReader &xmlStream);
     void XML_Read_Signal(CCANSignal* sig_group, QXmlStreamReader &xmlStream);
     void XML_Attr_To_Filter(CCANFilter *filter, QXmlStreamAttributes &attributes);
 

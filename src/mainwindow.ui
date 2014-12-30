@@ -37,7 +37,14 @@
      </widget>
     </item>
     <item row="0" column="0">
-     <widget class="QTreeView" name="treeView"/>
+     <widget class="QTreeView" name="treeView">
+      <property name="font">
+       <font>
+        <family>Fixed</family>
+        <pointsize>12</pointsize>
+       </font>
+      </property>
+     </widget>
     </item>
    </layout>
   </widget>
@@ -63,6 +70,7 @@
      <string>&amp;View</string>
     </property>
     <addaction name="action_Data_Graph"/>
+    <addaction name="actionShow_Hide_send_signal"/>
    </widget>
    <widget class="QMenu" name="menu_Logging">
     <property name="title">
@@ -103,6 +111,7 @@
    <addaction name="separator"/>
    <addaction name="action_Load_signal_definition"/>
    <addaction name="action_Data_Graph"/>
+   <addaction name="actionShow_Hide_send_signal"/>
    <addaction name="action_RAW_csv_to_readable_csv"/>
    <addaction name="action_Logging_Active"/>
   </widget>
@@ -201,6 +210,16 @@
    </property>
    <property name="text">
     <string>&amp;RAW *.csv to readable *.csv</string>
+   </property>
+  </action>
+  <action name="actionShow_Hide_send_signal">
+   <property name="icon">
+    <iconset>
+     <normalon>:/icons/icons/transmit.png</normalon>
+    </iconset>
+   </property>
+   <property name="text">
+    <string>Show/Hide send signal</string>
    </property>
   </action>
  </widget>

@@ -19,50 +19,18 @@
 #include "cslcan.h"
 #include <QStringList>
 
-
-#if !defined(__WINDOWS__)
-#define __write(__fd, __buf, __nbytes) write(__fd, __buf, __nbytes)
-#define __read(__fd, __buf, __nbytes) read(__fd, __buf, __nbytes)
-#define __close(__fd) close(__fd)
-#else
-int __write(HANDLE __fd, const void *__buf, size_t __nbytes)
-{
-    long unsigned int written;
-
-    if ( !WriteFile(__fd, __buf, __nbytes, &written, NULL) )
-    {
-        DWORD e = GetLastError();
-        return -1;
-    }
+#include <QDebug>
 
 
-    return written;
-}
 
-int __read(HANDLE __fd, void *__buf, size_t __nbytes)
-{
-    long unsigned int r;
+// Silence compiler warning if a function return value is not used
+#define NO_WARNING_UNUSED_RESULT(x) if((x)){};
 
-    if ( !ReadFile(__fd, __buf, __nbytes, &r, NULL) )
-    {
-        DWORD e = GetLastError();
-        return -1;
-    }
-
-    return r;
-}
-
-#define __close(__fd) CloseHandle(__fd)
-#endif
 
 CSLCAN::CSLCAN()
 {
     running = false;
-#if !defined(__WINDOWS__)
-    tty_fd = -1;
-#else
-    tty_fd = NULL;
-#endif
+
 }
 
 CSLCAN::~CSLCAN()
@@ -70,182 +38,111 @@ CSLCAN::~CSLCAN()
     close_can();
 }
 
+int CSLCAN::WriteString(QString &write, int timeout_ms)
+{
+
+    int i;
+    i = serial.write(write.toStdString().c_str(), write.length());
+
+    if ( i == -1 )
+        return -1;
+
+    if ( i == write.length() )
+        return i;
+
+    serial.flush();
+
+    if ( !serial.waitForBytesWritten(timeout_ms) )
+        return -1;
+
+    return i;
+
+}
+
+bool CSLCAN::ReadChar(char *c, int timeout_ms)
+{
+    serial.waitForReadyRead(timeout_ms);
+
+    if ( serial.read(c, 1) == 1 )
+        return true;
+
+    return false;
+}
+
 bool CSLCAN::parse_open(QString open)
 {
     QStringList list = open.split(",");
 
-    if ( list.size() != 6 )
+    if ( list.size() != 7 )
         return false;
 
-    _port = list[0];                // *
-    _baudrate = list[1].toLong();   // *
-    _databytes = list[2].toInt();   // *
-    _parity = list[3];              // *
-    _stopbits = list[4].toInt();    // *
+    _port = list[0];
+    _baudrate = list[1].toLong();
+    _databytes = list[2].toInt();
+    _parity = list[3].toUpper();
+    _stopbits = list[4].toInt();
     _canspeed = list[5].toLong();
+    _loopback = list[6] == "l";
 
     return true;
 }
 
 bool CSLCAN::open_can(QString can_device)
 {
-    unsigned char r;
+    char r;
 
-    unsigned char CR = 0x0D;
-    unsigned char VersionString[] = "V\x0D";
-    unsigned char SpeedString[] = "Sx\x0D";
-    unsigned char OpenString[] = "O\x0D";
-    unsigned char CloseString[] = "C\x0D";
+    QString CR = "\x0D";
+    QString VersionString = "V\x0D";
+    QString SpeedString = "Sx\x0D";
+    QString OpenString = "O\x0D";
+    QString LoopBackString = "I\x0D";
+    QString CloseString = "C\x0D";
 
     if ( !parse_open(can_device) )
         return false;
 
-#if !defined(__WINDOWS__)
-    memset(&tio, 0x00, sizeof(struct termios));
-
-    tio.c_iflag=0;
-    tio.c_oflag=0;
-
-    tio.c_cflag=CREAD|CLOCAL;
+    serial.setPortName(_port);
+    serial.setBaudRate(_baudrate);
     switch ( _databytes )
     {
-    case 5: tio.c_cflag|=CS5; break;
-    case 6: tio.c_cflag|=CS6; break;
-    case 7: tio.c_cflag|=CS7; break;
-    case 8: tio.c_cflag|=CS8; break;
+    case 5: serial.setDataBits(QSerialPort::Data5); break;
+    case 6: serial.setDataBits(QSerialPort::Data6); break;
+    case 7: serial.setDataBits(QSerialPort::Data7); break;
+    case 8: serial.setDataBits(QSerialPort::Data8); break;
     default:
-        return false;
+        break;
     }
 
-    switch ( _stopbits )
-    {
-    case 1: break;
-    case 2: tio.c_cflag|=CSTOPB; break;
-    default:
+    if ( _parity == "N")
+        serial.setParity(QSerialPort::NoParity);
+    else if ( _parity == "E" )
+        serial.setParity(QSerialPort::EvenParity);
+    else if ( _parity == "O" )
+        serial.setParity(QSerialPort::OddParity);
+
+    if ( _stopbits == 1)
+        serial.setStopBits(QSerialPort::OneStop);
+    else if ( _stopbits == 2 )
+        serial.setStopBits(QSerialPort::TwoStop);
+
+
+    if ( !serial.open(QSerialPort::ReadWrite) )
         return false;
-    }
-
-    if ( _parity == "N" )
-    {
-
-    } else if ( _parity == "O" )
-    {
-        tio.c_cflag |= PARENB;
-        tio.c_cflag |= PARODD;
-    } else if ( _parity == "E" )
-    {
-        tio.c_cflag |= PARENB;
-    } else {
-        return false;
-    }
-
-    tio.c_lflag=0;
-    tio.c_cc[VMIN]=1;
-    tio.c_cc[VTIME]=5;  // set inter byte timer to 0.5 secs
-
-    tty_fd = open(_port.toStdString().c_str(), O_RDWR ); // Read/write blocking mode
-
-    if ( tty_fd < 0 )
-        return false;
-
-
-
-    speed_t speed;
-
-    switch ( _baudrate )
-    {
-    case 0: speed = B0; break;
-    case 50: speed = B50; break;
-    case 75: speed = B75; break;
-    case 110: speed = B110; break;
-    case 134: speed = B134; break;
-    case 150: speed = B150; break;
-    case 200: speed = B200; break;
-    case 300: speed = B300; break;
-    case 600: speed = B600; break;
-    case 1200: speed = B1200; break;
-    case 1800: speed = B1800; break;
-    case 2400: speed = B2400; break;
-    case 4800: speed = B4800; break;
-    case 9600: speed = B9600; break;
-    case 19200: speed = B19200; break;
-    case 38400: speed = B38400; break;
-    case 57600: speed = B57600; break;
-    case 115200: speed = B115200; break;
-    case 230400: speed = B230400; break;
-    case 460800: speed = B460800; break;
-    case 500000: speed = B500000; break;
-    case 576000: speed = B576000; break;
-    case 921600: speed = B921600; break;
-    case 1000000: speed = B1000000; break;
-    case 1152000: speed = B1152000; break;
-    case 2000000: speed = B2000000; break;
-    case 2500000: speed = B2500000; break;
-    case 3000000: speed = B3000000; break;
-    case 3500000: speed = B3500000; break;
-    case 4000000: speed = B4000000; break;
-
-    default:
-        close(tty_fd);
-        return false;
-    }
-
-    if ( cfsetispeed(&tio, speed) < 0 ||  cfsetospeed(&tio, speed) < 0)
-    {
-        close(tty_fd);
-        return false;
-    }
-
-
-    if ( tcsetattr(tty_fd, TCSANOW, &tio) == -1 )
-    {
-        close(tty_fd);
-        return false;
-    }
-
-#else
-    tty_fd = CreateFile( (LPCWSTR) _port.toStdWString().c_str(),
-                        GENERIC_READ | GENERIC_WRITE,
-                        0,
-                        0,
-                        OPEN_EXISTING,
-                        FILE_ATTRIBUTE_NORMAL,
-                        0);
-    if (tty_fd == INVALID_HANDLE_VALUE)
-        return false;
-
-    DCB dcb;
-    ZeroMemory(&dcb, sizeof(DCB));
-
-    QString buffer = QString("baud=%1 parity=%2 data=%3 stop=%4").arg(_baudrate).arg(_parity.toLower()).arg(_databytes).arg(_stopbits);
-
-    BuildCommDCB(buffer.toStdWString().c_str(), &dcb);
-
-    if(!SetCommState(tty_fd, &dcb))
-        return false;
-
-    COMMTIMEOUTS comTimeOut;
-    comTimeOut.ReadIntervalTimeout = 3000;
-    comTimeOut.ReadTotalTimeoutMultiplier = 3000;
-    comTimeOut.ReadTotalTimeoutConstant = 2000;
-    comTimeOut.WriteTotalTimeoutMultiplier = 3000;
-    comTimeOut.WriteTotalTimeoutConstant = 2000;
-    SetCommTimeouts(tty_fd,&comTimeOut);
-#endif
 
     // Close
-    __write(tty_fd, &CloseString, 2);
+    NO_WARNING_UNUSED_RESULT( WriteString(CloseString) );
+
 
     // Reset by sending 0x0D three times
     for ( int i=0; i<3; i++ )
-        if ( __write(tty_fd, &CR, 1) != 1 )
+        if ( WriteString(CR) != 1 )
         {
             close_can();
             return false;
         }
 
     // Send version string
-    if ( __write(tty_fd, VersionString, 2) != 2 )
+    if ( WriteString(VersionString) != 2 )
     {
         close_can();
         return false;
@@ -254,7 +151,7 @@ bool CSLCAN::open_can(QString can_device)
     // Wait for reply
     while ( r != 'V' )
     {
-        if ( __read(tty_fd, &r, 1) == 0 )
+        if ( !ReadChar(&r, 100) )
         {
             close_can();
             return false;
@@ -264,7 +161,7 @@ bool CSLCAN::open_can(QString can_device)
     // Empty buffer
     while ( r != 0x0D )
     {
-        if ( __read(tty_fd, &r, 1) == 0 )
+        if ( !ReadChar(&r, 100) )
         {
             close_can();
             return false;
@@ -285,31 +182,14 @@ bool CSLCAN::open_can(QString can_device)
     default: close_can(); return false;
     }
 
-    if ( __write(tty_fd, SpeedString, 3) != 3 )
+    if (  WriteString(SpeedString) != 3 )
     {
         close_can();
         return false;
     }
 
-    if ( __read(tty_fd, &r, 1) != 1 )
-    {
-        close_can();
-        return false;
-    }
 
-    if ( r != 0x0D )
-    {
-        close_can();
-        return false;
-    }
-
-    if ( __write(tty_fd, OpenString, 2) != 2 )
-    {
-        close_can();
-        return false;
-    }
-
-    /*if ( read(tty_fd, &r, 1) != 1 )
+    if ( !ReadChar(&r, 100) )
     {
         close_can();
         return false;
@@ -319,7 +199,23 @@ bool CSLCAN::open_can(QString can_device)
     {
         close_can();
         return false;
-    }*/
+    }
+
+    if ( !_loopback )
+    {
+        if ( WriteString(OpenString) != 2 )
+        {
+            close_can();
+            return false;
+        }
+    } else {
+        if ( WriteString(LoopBackString) != 2 )
+        {
+            close_can();
+            return false;
+        }
+    }
+
 
     running = true;
     start();
@@ -329,28 +225,17 @@ bool CSLCAN::open_can(QString can_device)
 
 void CSLCAN::close_can()
 {
-    unsigned char CloseString[] = "C\x0D";
+    QString CloseString = "C\x0D";
 
-#if !defined(__WINDOWS__)
-    if ( tty_fd < 0 )
-        return;
-#else
-    if ( tty_fd == NULL )
-        return;
-#endif
+
 
     running = false;
     terminate();
 
     while ( isRunning() );
-    __write(tty_fd, CloseString, 2);
-    __close(tty_fd);
+    NO_WARNING_UNUSED_RESULT( WriteString(CloseString) );
 
-#if !defined(__WINDOWS__)
-    tty_fd = -1;
-#else
-    tty_fd = NULL;
-#endif
+    serial.close();
 
 }
 
@@ -369,7 +254,7 @@ void CSLCAN::run()
     struct decoded_can_frame d_frame;
     SLCAN_Thread_States state = WAIT_0x0D;
 
-    unsigned char r;
+    char r;
     int id_cnt = 0;
     int dat_cnt = 0;
     int dat_index = 0;
@@ -380,7 +265,7 @@ void CSLCAN::run()
 
     while ( running )
     {
-        if ( __read(tty_fd, &r, 1) == 1 )
+        if ( ReadChar(&r, 0) )
         {
             switch ( state )
             {
@@ -398,6 +283,10 @@ void CSLCAN::run()
                 break;
 
             case WAIT_COMMAND:
+                // There might be a 0x0D after sending sth. Do dismiss this 0x0D
+                if ( r == 0x0D )
+                    continue;
+
                 if ( r == 't' ) // Receive SID
                 {
                     d_frame.EFF = false;
@@ -453,7 +342,7 @@ void CSLCAN::run()
                 }
                 id_cnt++;
 
-                if ( (state == DECODE_SID && id_cnt == 3) || (state == DECODE_EID && id_cnt == 7) )
+                if ( (state == DECODE_SID && id_cnt == 3) || (state == DECODE_EID && id_cnt == 8) )
                     state = DECODE_DLC;
                 break;
 
@@ -509,3 +398,41 @@ void CSLCAN::run()
     }
 }
 
+bool CSLCAN::send(int64_t id, bool ext, bool rtr, uint8_t dlc, uint8_t *data)
+{
+    QString s;
+
+    if ( dlc > 8 )
+        return false;
+
+
+    if ( !ext && !rtr )
+        s = tr("t");        // Transmit SID
+    else if ( ext && !rtr )
+        s = tr("T");        // Transmit EID
+    else if ( !ext && rtr )
+        s = tr("r");        // Remote tramsmission request with SID
+    else if ( ext && rtr )
+        s = tr("R");        // Remote transmission request with EID
+
+
+    if ( ext )              // Add ID for EID
+        s = s + QString("%1").arg(id, 8, 16, QChar('0')).toUpper();
+    else
+        s = s + QString("%1").arg(id, 3, 16, QChar('0')).toUpper();
+
+    s = s + QString("%1").arg(dlc, 1, 16, QChar('0')).toUpper();
+
+    if ( !rtr )
+        for ( uint8_t i = 0; i<dlc; i++ )
+            s = s + QString("%1").arg(data[i], 2, 16, QChar('0')).toUpper();
+
+    s = s + tr("\x0D");
+
+    int i = s.length();
+
+    if ( WriteString(s) != i )
+        return false;
+
+    return true;
+}

@@ -21,6 +21,12 @@
 #include "global_config.h"
 
 #include <QDialogButtonBox>
+#include <QDirIterator>
+#include <QDebug>
+
+#ifdef __WINDOWS__
+#include <windows.h>
+#endif
 
 /*!
  * \brief Constructor
@@ -67,15 +73,16 @@ void ConnectDialog::on_buttonBox_accepted()
 
     case 1: // Open a SLCAN port
 
-        // Port, COM Port, UART Bitrate, Databits, Parity, Stopbits, CAN speed
-        // e.g. COM1,9600.8,N,1,500000
-        port = QString("%1,%2,%3,%4,%5,%6")
+        // Port, COM Port, UART Bitrate, Databits, Parity, Stopbits, CAN speed, Loopback
+        // e.g. COM1,9600.8,N,1,500000,o
+        port = QString("%1,%2,%3,%4,%5,%6,%7")
                 .arg(ui->comboBox_COM_port->currentText())
                 .arg(ui->comboBox_speed->currentText())
                 .arg(ui->comboBox_Data_Bits->currentText())
                 .arg(ui->comboBox_Parity->currentText()[0]) // First character of None, Odd, Even
                 .arg(ui->comboBox_StopBits->currentText())
-                .arg(ui->comboBox_CAN_Bitrate->currentText());
+                .arg(ui->comboBox_CAN_Bitrate->currentText())
+                .arg(ui->checkBox_LoopBack->isChecked() ? "l" : "o");   // Loopback or open CAN
         can = new CSLCAN();
 
         setConfig("CAN_BITRATE_BOX", QString("%1").arg(ui->comboBox_CAN_Bitrate->currentIndex()));
@@ -84,7 +91,7 @@ void ConnectDialog::on_buttonBox_accepted()
         setConfig("PARITY_BOX", QString("%1").arg(ui->comboBox_Parity->currentIndex()));
         setConfig("SPEED_BOX", QString("%1").arg(ui->comboBox_speed->currentIndex()));
         setConfig("STOP_BIT_BOX", QString("%1").arg(ui->comboBox_StopBits->currentIndex()));
-
+        setConfig("LOOPBACK_BOX", ui->checkBox_LoopBack->isChecked() ? "yes" : "no");
         break;
 
     default:
@@ -110,6 +117,41 @@ void ConnectDialog::on_buttonBox_rejected()
 void ConnectDialog::showEvent(QShowEvent *event)
 {
     Q_UNUSED(event);
+    ui->comboBox_COM_port->clear();
+
+#ifdef __WINDOWS__
+    // Enumerate comports
+    for ( int i=0; i<=255; i++ )
+    {
+        WCHAR lpTargetPath[5000];
+        QString comport = QString("COM%1").arg(i);
+        DWORD test = QueryDosDevice(comport.toStdWString().c_str(), (LPWSTR)lpTargetPath, 5000);
+        if ( test != 0 )
+        {
+            ui->comboBox_COM_port->addItem(comport);
+        }
+    }
+#else
+    QDirIterator it("/dev/serial/by-id", QDirIterator::NoIteratorFlags);
+    while ( it.hasNext() )
+    {
+        it.next();
+
+        QString path = it.fileInfo().fileName();
+
+        if ( path == "." || path == ".." )
+            continue;
+
+        if ( !it.fileInfo().isSymLink() )
+            continue;
+
+        ui->comboBox_COM_port->addItem(it.fileInfo().symLinkTarget());
+
+    }
+#endif
+
+
+
 
     ui->comboBox_CAN_Bitrate->setCurrentIndex(getConfig("CAN_BITRATE_BOX").toInt());
     ui->comboBox_COM_port->lineEdit()->setText(getConfig("COM_PORT_BOX"));
@@ -118,4 +160,5 @@ void ConnectDialog::showEvent(QShowEvent *event)
     ui->comboBox_speed->setCurrentIndex(getConfig("SPEED_BOX").toInt());
     ui->comboBox_StopBits->setCurrentIndex(getConfig("STOP_BIT_BOX").toInt());
     ui->lineEdit_SocketCAN_device->setText(getConfig("SOCKET_CAN_PORT"));
+    ui->checkBox_LoopBack->setChecked(getConfig("LOOPBACK_BOX")=="yes");
 }
