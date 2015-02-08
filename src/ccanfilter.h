@@ -62,12 +62,12 @@ public:
      * \brief Set EID/SID bit-mask
      * \param accept_id EID/SID bit-mask
      */
-    void setIDMask(unsigned long accept_id) { id_mask = accept_id; }
+    void setIDMask(quint32 accept_id) { id_mask = accept_id; }
     /*!
      * \brief Gets EID/SID bit-mask
      * \return EID/SID bit-mask
      */
-    unsigned long getIDMask() { return id_mask; }
+    quint32 getIDMask() { return id_mask; }
 
     /*!
      * \brief Sets accepted DLC
@@ -100,7 +100,7 @@ public:
 private:
     bool eid;                    //! accept eid
     bool sid;                    //! accept sid
-    unsigned long id_mask;       //! IDs to accept, checked by bitwise-and
+    quint32 id_mask;       //! IDs to accept, must match, except id_mask >0x7FF or >0x7FFFFFFFFFFFFFFF
     unsigned char dlc_mask;      //! DLC to accept, frame.dlc must be equal to dlc_mask, except dlc_mask = 0xFF
     unsigned char rtr_mask;      //! RTR to accept, frame.rtr must be equal to rtr_mask, except rtr_mask = 0xFF
     unsigned char data_mask[8];  //! Data mask to accept, data{n} must be qeual to data_mask{n}, except data_mask{n} = 0xFF

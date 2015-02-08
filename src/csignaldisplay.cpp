@@ -124,6 +124,40 @@ QString CSignalDisplayHex::format_number(uint64_t num)
     return QString("0x%1").arg(num, 0, 16);
 }
 
+CSignalDisplayInt8::CSignalDisplayInt8()
+    : CSignalDisplayNum()
+{
+
+}
+
+QString CSignalDisplayInt8::format_number(uint64_t num)
+{
+    if ( num > 0xFF )
+        return QString("Out of range");
+
+    int8_t tmp;
+    memcpy((void*)&tmp, (void*)&num, sizeof(int8_t));
+
+    return QString("%1").arg(tmp, 0, 10);
+}
+
+CSignalDisplayUInt8::CSignalDisplayUInt8()
+    : CSignalDisplayNum()
+{
+
+}
+
+QString CSignalDisplayUInt8::format_number(uint64_t num)
+{
+    if ( num > 0xFF )
+        return QString("Out of range");
+
+    uint8_t tmp;
+    memcpy((void*)&tmp, (void*)&num, sizeof(uint8_t));
+
+    return QString("%1").arg(tmp, 0, 10);
+}
+
 CSignalDisplayInt16::CSignalDisplayInt16()
     : CSignalDisplayNum()
 {

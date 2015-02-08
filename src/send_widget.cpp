@@ -102,7 +102,7 @@ void send_widget::send_data()
         return;
 
     if ( can != NULL )
-        can->send(id, ext, rtr, dlc, data);
+        can->send_can(id, ext, rtr, dlc, data);
 }
 
 void send_widget::on_pushButton_send_clicked()

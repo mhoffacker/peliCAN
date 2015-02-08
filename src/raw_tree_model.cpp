@@ -59,7 +59,7 @@ QVariant raw_tree_model::data(const QModelIndex &index, int role) const
         case 0:
             return d->time_as_str;
         case 1:
-            return QString("  ");
+            return QString("  ");   // Empty, only color
         case 2:
             return d->can_id;
         case 3:
@@ -67,7 +67,7 @@ QVariant raw_tree_model::data(const QModelIndex &index, int role) const
         case 4:
             return d->data;
         case 5:
-            return QString("");
+            return d->ascii;
         case 6:
             return d->name;
         }
@@ -130,6 +130,9 @@ void raw_tree_model::insert_data(QString name, const decoded_can_frame &frame)
                 .arg(frame.data[5], 2, 16, QLatin1Char( '0' )).toUpper()
                 .arg(frame.data[6], 2, 16, QLatin1Char( '0' )).toUpper()
                 .arg(frame.data[7], 2, 16, QLatin1Char( '0' )).toUpper();
+
+    d->ascii.fromLocal8Bit((char*)frame.data, frame.can_dlc);
+
 
     my_data.append(d);
 

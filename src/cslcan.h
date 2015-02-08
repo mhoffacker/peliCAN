@@ -36,6 +36,8 @@
 #include <sys/time.h>
 
 #include <QtSerialPort/QSerialPort>
+#include <QMutex>
+#include <QQueue>
 
 class CSLCAN : public CCanComm
 {
@@ -46,7 +48,7 @@ public:
     ~CSLCAN();
     bool open_can(QString can_device);
     void close_can();
-    bool send(int64_t id, bool ext, bool rtr, uint8_t dlc, uint8_t *data);
+    bool send_can(int64_t id, bool ext, bool rtr, uint8_t dlc, uint8_t *data);
 
 protected:
     void run();
@@ -58,7 +60,7 @@ private:
 
     QSerialPort serial;
 
-    int WriteString(QString &write, int timeout_ms = 0);
+    int WriteString(QString write, int timeout_ms = 0);
     bool ReadChar(char *c, int timeout_ms = 0);
 
     QString _port;
@@ -68,6 +70,8 @@ private:
     unsigned int _stopbits;
     unsigned long _canspeed;
     bool _loopback;
+
+    QQueue<QString> queue;
 };
 
 #endif // CSLCAN_H

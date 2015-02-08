@@ -45,7 +45,8 @@ SOURCES += main.cpp\
     global_config.cpp \
     send_widget.cpp \
     dialogsenddata.cpp \
-    send_widget_special.cpp
+    send_widget_special.cpp \
+    dialogsignaleditor.cpp
 
 HEADERS  += mainwindow.h \
     csocketcan.h \
@@ -64,7 +65,8 @@ HEADERS  += mainwindow.h \
     global_config.h \
     send_widget.h \
     dialogsenddata.h \
-    send_widget_special.h
+    send_widget_special.h \
+    dialogsignaleditor.h
 
 FORMS    += mainwindow.ui \
     connectdialog.ui \
@@ -73,7 +75,8 @@ FORMS    += mainwindow.ui \
     dialograw2readable.ui \
     send_widget.ui \
     dialogsenddata.ui \
-    send_widget_special.ui
+    send_widget_special.ui \
+    dialogsignaleditor.ui
 
 RESOURCES += \
     resources.qrc

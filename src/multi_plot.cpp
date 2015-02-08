@@ -565,6 +565,12 @@ void CGraph::removePlot(CPlot *p)
     p->getCurve()->detach();
 }
 
+void CGraph::removeAllPlots()
+{
+    while ( !plots.empty() )
+        removePlot(plots.first());
+}
+
 /*!
  * \brief CGraph::addAxisLeft Add an axis on the left
  * \return Pointer to new CAxis

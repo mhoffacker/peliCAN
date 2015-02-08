@@ -76,8 +76,10 @@ bool CCANFilter::match(const decoded_can_frame &frame)
         return false;
 
     // Check for ID
-    if ( (frame.can_id & id_mask) != frame.can_id )
-        return false;
+    if ( ( eid && id_mask <= 0x7FFFFFFF ) ||
+         ( !eid && id_mask <= 0x7FF ) )
+            if ( id_mask != frame.can_id )
+                return false;
 
     // Check for RTR
     if ( rtr_mask != 0xFF && frame.RTR != rtr_mask )

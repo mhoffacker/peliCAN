@@ -29,6 +29,7 @@ struct decoded_can_frame_string {
     QString can_id;
     QString can_dlc;
     QString data;
+    QString ascii;
     bool EFF;
     bool RTR;
     bool ERR;

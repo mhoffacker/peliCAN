@@ -218,7 +218,11 @@
     </widget>
    </item>
    <item>
-    <widget class="QSpinBox" name="spinBox"/>
+    <widget class="QSpinBox" name="spinBox">
+     <property name="keyboardTracking">
+      <bool>false</bool>
+     </property>
+    </widget>
    </item>
   </layout>
  </widget>

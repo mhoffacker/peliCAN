@@ -68,6 +68,10 @@ private slots:
 
     void on_actionShow_Hide_send_signal_triggered();
 
+    void on_action_Help_triggered();
+
+    void on_action_Edit_signal_definition_triggered();
+
 private:
     Ui::MainWindow *ui;
 

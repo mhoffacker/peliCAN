@@ -19,29 +19,6 @@ DialogSendData::~DialogSendData()
 }
 
 
-void DialogSendData::on_spinBox_editingFinished()
-{
-    int arg1 = ui->spinBox->value();
-
-    while ( arg1 > sendwidgets.size() )
-    {
-        send_widget *w = new send_widget(ui->scrollAreaWidgetContents);
-        w->setCanComm(can);
-
-        ui->verticalLayout_Widget->addWidget(w);
-        sendwidgets.append(w);
-    }
-
-    while ( arg1 < sendwidgets.size() )
-    {
-        send_widget *w = sendwidgets.last();
-        ui->verticalLayout_Widget->removeWidget(w);
-        delete w;
-
-        sendwidgets.removeLast();
-    }
-}
-
 void DialogSendData::setCanComm(CCanComm *c)
 {
     can = c;
@@ -65,4 +42,37 @@ send_widget_special *DialogSendData::AddSpecialWidget()
     s->setCanComm(can);
 
     return s;
+}
+
+void DialogSendData::RemoveAllSpecialWidget()
+{
+    while ( !sendwidgetsspecial.empty() )
+    {
+        send_widget_special *w = sendwidgetsspecial.first();
+        ui->verticalLayout_Widget->removeWidget(w);
+        delete w;
+
+        sendwidgetsspecial.removeFirst();
+    }
+}
+
+void DialogSendData::on_spinBox_valueChanged(int arg1)
+{
+    while ( arg1 > sendwidgets.size() )
+    {
+        send_widget *w = new send_widget(ui->scrollAreaWidgetContents);
+        w->setCanComm(can);
+
+        ui->verticalLayout_Widget->addWidget(w);
+        sendwidgets.append(w);
+    }
+
+    while ( arg1 < sendwidgets.size() )
+    {
+        send_widget *w = sendwidgets.last();
+        ui->verticalLayout_Widget->removeWidget(w);
+        delete w;
+
+        sendwidgets.removeLast();
+    }
 }

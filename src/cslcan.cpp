@@ -38,22 +38,29 @@ CSLCAN::~CSLCAN()
     close_can();
 }
 
-int CSLCAN::WriteString(QString &write, int timeout_ms)
+int CSLCAN::WriteString(QString write, int timeout_ms)
 {
 
     int i;
     i = serial.write(write.toStdString().c_str(), write.length());
 
     if ( i == -1 )
+    {
         return -1;
+    }
 
     if ( i == write.length() )
+    {
         return i;
+    }
 
     serial.flush();
 
     if ( !serial.waitForBytesWritten(timeout_ms) )
+    {
         return -1;
+    }
+
 
     return i;
 
@@ -61,10 +68,13 @@ int CSLCAN::WriteString(QString &write, int timeout_ms)
 
 bool CSLCAN::ReadChar(char *c, int timeout_ms)
 {
+
     serial.waitForReadyRead(timeout_ms);
 
     if ( serial.read(c, 1) == 1 )
+    {
         return true;
+    }
 
     return false;
 }
@@ -265,6 +275,9 @@ void CSLCAN::run()
 
     while ( running )
     {
+        if ( ! queue.isEmpty() )
+            WriteString(queue.dequeue());
+
         if ( ReadChar(&r, 0) )
         {
             switch ( state )
@@ -398,7 +411,7 @@ void CSLCAN::run()
     }
 }
 
-bool CSLCAN::send(int64_t id, bool ext, bool rtr, uint8_t dlc, uint8_t *data)
+bool CSLCAN::send_can(int64_t id, bool ext, bool rtr, uint8_t dlc, uint8_t *data)
 {
     QString s;
 
@@ -429,10 +442,13 @@ bool CSLCAN::send(int64_t id, bool ext, bool rtr, uint8_t dlc, uint8_t *data)
 
     s = s + tr("\x0D");
 
-    int i = s.length();
+    //int i = s.length();
 
-    if ( WriteString(s) != i )
-        return false;
+    queue.enqueue(s);
+    //if ( WriteString(s) != i )
+    //{
+    //    return false;
+    //}
 
     return true;
 }

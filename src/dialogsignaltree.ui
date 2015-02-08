@@ -70,6 +70,9 @@
           <height>24</height>
          </rect>
         </property>
+        <property name="keyboardTracking">
+         <bool>false</bool>
+        </property>
         <property name="maximum">
          <double>99999.000000000000000</double>
         </property>
@@ -98,6 +101,9 @@
           <width>111</width>
           <height>24</height>
          </rect>
+        </property>
+        <property name="keyboardTracking">
+         <bool>false</bool>
         </property>
         <property name="maximum">
          <double>1000000000.000000000000000</double>

@@ -249,8 +249,10 @@ void send_widget_special::send_data()
 
     if ( can != NULL )
     {
-        ui->checkBox->setChecked(true);
-        can->send(m_id, m_ext, false, m_dlc, data);
+        if ( can->send_can(m_id, m_ext, false, m_dlc, data) )
+            ui->checkBox->setChecked(true);
+        else
+            ui->checkBox->setChecked(false);
     } else
         ui->checkBox->setChecked(false);
 

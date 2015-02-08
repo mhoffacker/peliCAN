@@ -132,9 +132,25 @@ void CSocketCAN::run()
     }
 }
 
-bool CSocketCAN::send(int64_t id, bool ext, bool rtr, uint8_t dlc, uint8_t *data)
+bool CSocketCAN::send_can(int64_t id, bool ext, bool rtr, uint8_t dlc, uint8_t *data)
 {
-    return false;
+    struct can_frame frame;
+    frame.can_id = id;
+
+    if ( ext )
+        frame.can_id |= CAN_EFF_FLAG;
+
+    if ( rtr )
+        frame.can_id |= CAN_RTR_FLAG;
+
+    frame.can_dlc = dlc;
+
+    memcpy(frame.data, data, dlc);
+
+    if ( send(s, (void *)&frame, sizeof(struct can_frame), 0) < 0 )
+        return false;
+
+    return true;
 }
 
 #endif

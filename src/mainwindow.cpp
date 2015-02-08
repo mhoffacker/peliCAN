@@ -22,9 +22,12 @@
 #include "aboutdialog.h"
 #include "dialograw2readable.h"
 #include "csignaldisplay.h"
+#include "dialogsignaleditor.h"
 
 #include <QMessageBox>
 #include <QFileDialog>
+#include <QDesktopServices>
+#include <QUrl>
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -144,6 +147,7 @@ bool MainWindow::online(bool o, QString port)
             ui->label_online->setText("Connection: Online on "+port);
             ui->action_Load_signal_definition->setEnabled(false);
             ui->action_RAW_csv_to_readable_csv->setEnabled(false);
+            ui->action_Edit_signal_definition->setEnabled(false);
 
             dialog_send_data->setCanComm(can);
             return true;
@@ -168,6 +172,7 @@ bool MainWindow::online(bool o, QString port)
 
         ui->action_Load_signal_definition->setEnabled(true);
         ui->action_RAW_csv_to_readable_csv->setEnabled(true);
+        ui->action_Edit_signal_definition->setEnabled(true);
 
         return true;
     }
@@ -345,6 +350,14 @@ void MainWindow::XML_Read_Signal(CCANSignal *sig_group, QXmlStreamReader &xmlStr
                         if ( t.toLower() == "hex")
                         {
                             sd = new CSignalDisplayHex();
+                            sd->setParam(dm);
+                        } else if ( t.toLower() == "int8" )
+                        {
+                            sd = new CSignalDisplayInt8();
+                            sd->setParam(dm);
+                        } else if ( t.toLower() == "uint8" )
+                        {
+                            sd = new CSignalDisplayUInt8();
                             sd->setParam(dm);
                         } else if ( t.toLower() == "int16" )
                         {
@@ -540,12 +553,18 @@ bool MainWindow::XML_Read_Settings(QIODevice *device)
     clear_can_raw_view_filter();
     can_signals_root->clear();
 
+
+
     foreach ( CAxis *a, AxisHash )
     {
         dialog_signal_tree->getGraph()->removeAxis(a);
     }
 
     AxisHash.clear();
+
+    dialog_signal_tree->getGraph()->removeAllPlots();
+    dialog_send_data->RemoveAllSpecialWidget();
+
 
     while ( !xmlStream.atEnd() && !xmlStream.hasError() )
     {
@@ -608,7 +627,7 @@ void MainWindow::on_action_Load_signal_definition_triggered()
         QMessageBox msgBox;
         msgBox.setText("Could not load signal definition file.");
         msgBox.exec();
-        ui->label_signal_def->setText("Signal definition: None, accepting all in raw-view.");
+        ui->label_signal_def->setText("Signal definition: None, accepting nothing in raw-view.");
     } else {
         ui->label_signal_def->setText("Signal definition: "+fileName);
         dialog_signal_tree->SetTreeModel(NULL);
@@ -848,4 +867,16 @@ void MainWindow::on_action_RAW_csv_to_readable_csv_triggered()
 void MainWindow::on_actionShow_Hide_send_signal_triggered()
 {
     dialog_send_data->setVisible(!dialog_send_data->isVisible());
+}
+
+void MainWindow::on_action_Help_triggered()
+{
+    QDesktopServices::openUrl(QUrl("http://www.hans-dampf.org"));
+}
+
+void MainWindow::on_action_Edit_signal_definition_triggered()
+{
+    DialogSignalEditor *e = new DialogSignalEditor(this);
+    e->exec();
+    delete e;
 }

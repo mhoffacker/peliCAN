@@ -23,10 +23,11 @@ public:
     void setCanComm(CCanComm *c);
 
     send_widget_special *AddSpecialWidget();
+    void RemoveAllSpecialWidget();
 
 private slots:
 
-    void on_spinBox_editingFinished();
+    void on_spinBox_valueChanged(int arg1);
 
 private:
     Ui::DialogSendData *ui;

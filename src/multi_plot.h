@@ -29,6 +29,7 @@ public:
 
     CPlot* addPlot();
     void removePlot(CPlot *p);
+    void removeAllPlots();
 
     CAxis* addAxisLeft();
     CAxis* addAxisRight();

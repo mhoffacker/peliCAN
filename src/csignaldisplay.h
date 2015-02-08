@@ -90,6 +90,24 @@ private:
     QString format_number(uint64_t num);
 };
 
+class CSignalDisplayInt8 : public CSignalDisplayNum
+{
+public:
+    CSignalDisplayInt8();
+
+private:
+    QString format_number(uint64_t num);
+};
+
+class CSignalDisplayUInt8 : public CSignalDisplayNum
+{
+public:
+    CSignalDisplayUInt8();
+
+private:
+    QString format_number(uint64_t num);
+};
+
 class CSignalDisplayInt16 : public CSignalDisplayNum
 {
 public:

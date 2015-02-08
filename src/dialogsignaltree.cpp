@@ -70,3 +70,4 @@ double DialogSignalTree::getUpdateRate()
 {
     return ui->doubleSpinBox_UpdateRate->value();
 }
+
