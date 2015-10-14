@@ -34,6 +34,9 @@
 #include "dialogsignaltree.h"
 #include "dialogsenddata.h"
 #include "send_widget_special.h"
+#include "dialogquadi.h"
+#include "ccanmessage.h"
+#include "dialogdataview.h"
 
 namespace Ui {
 class MainWindow;
@@ -72,6 +75,8 @@ private slots:
 
     void on_action_Edit_signal_definition_triggered();
 
+    void on_actionQuadI_configurator_triggered();
+
 private:
     Ui::MainWindow *ui;
 
@@ -79,11 +84,16 @@ private:
     CCANSignal *can_signals_root;
     QList<CCANFilter*> can_raw_view_filter;
 
+    QList<CCANMessage*> can_messages;
+
     raw_tree_model *rt_model;
     signal_tree_model *st_model;
 
     DialogSignalTree *dialog_signal_tree;
     DialogSendData *dialog_send_data;
+    DialogQuadI *dialog_quadi;
+    DialogDataView *dialog_dataview;
+
 
     QHash<QString, CAxis*> AxisHash;
     bool XML_Read_Settings(QIODevice* device);

@@ -1,0 +1,1300 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>DialogQuadI</class>
+ <widget class="QDialog" name="DialogQuadI">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>818</width>
+    <height>574</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Dialog</string>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout">
+   <item>
+    <layout class="QHBoxLayout" name="horizontalLayout">
+     <item>
+      <widget class="QTabWidget" name="tabWidget">
+       <property name="enabled">
+        <bool>true</bool>
+       </property>
+       <property name="currentIndex">
+        <number>0</number>
+       </property>
+       <widget class="QWidget" name="tab">
+        <attribute name="title">
+         <string>Configuration</string>
+        </attribute>
+        <layout class="QHBoxLayout" name="horizontalLayout_2">
+         <item>
+          <widget class="QScrollArea" name="scrollArea">
+           <property name="widgetResizable">
+            <bool>true</bool>
+           </property>
+           <widget class="QWidget" name="scrollAreaWidgetContents">
+            <property name="geometry">
+             <rect>
+              <x>0</x>
+              <y>0</y>
+              <width>760</width>
+              <height>759</height>
+             </rect>
+            </property>
+            <layout class="QGridLayout" name="gridLayout">
+             <item row="6" column="2">
+              <widget class="QPushButton" name="pushButton_write">
+               <property name="text">
+                <string>Write config</string>
+               </property>
+              </widget>
+             </item>
+             <item row="5" column="0">
+              <spacer name="verticalSpacer">
+               <property name="orientation">
+                <enum>Qt::Vertical</enum>
+               </property>
+               <property name="sizeHint" stdset="0">
+                <size>
+                 <width>20</width>
+                 <height>40</height>
+                </size>
+               </property>
+              </spacer>
+             </item>
+             <item row="6" column="3">
+              <widget class="QPushButton" name="pushButton_store">
+               <property name="text">
+                <string>Store config</string>
+               </property>
+              </widget>
+             </item>
+             <item row="6" column="0">
+              <widget class="QPushButton" name="pushButton_Read">
+               <property name="text">
+                <string>Read config</string>
+               </property>
+              </widget>
+             </item>
+             <item row="1" column="0">
+              <widget class="QLineEdit" name="lineEdit_versionMajor">
+               <property name="enabled">
+                <bool>false</bool>
+               </property>
+              </widget>
+             </item>
+             <item row="3" column="0">
+              <widget class="QLineEdit" name="lineEdit_CAN_bitrate"/>
+             </item>
+             <item row="0" column="0">
+              <widget class="QLabel" name="label">
+               <property name="text">
+                <string>Major version</string>
+               </property>
+              </widget>
+             </item>
+             <item row="2" column="0">
+              <widget class="QLabel" name="label_3">
+               <property name="text">
+                <string>CAN bitrate</string>
+               </property>
+              </widget>
+             </item>
+             <item row="3" column="2">
+              <widget class="QLineEdit" name="lineEdit_MotorDriverFreq"/>
+             </item>
+             <item row="2" column="2">
+              <widget class="QLabel" name="label_15">
+               <property name="text">
+                <string>Motor driver PWM frequency</string>
+               </property>
+              </widget>
+             </item>
+             <item row="4" column="0" colspan="4">
+              <widget class="QGroupBox" name="groupBox">
+               <property name="title">
+                <string>A4963 motor driver</string>
+               </property>
+               <layout class="QGridLayout" name="gridLayout_2">
+                <item row="0" column="0">
+                 <widget class="QLabel" name="label_4">
+                  <property name="text">
+                   <string>CONFIG0_RM</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="18" column="2">
+                 <widget class="QLabel" name="label_8">
+                  <property name="text">
+                   <string>CONFIG5_SMX[2:0]</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="18" column="1">
+                 <widget class="QLabel" name="label_7">
+                  <property name="text">
+                   <string>CONFIG5_SPO</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="5" column="1">
+                 <widget class="QLineEdit" name="lineEdit_CONFIG1_VT"/>
+                </item>
+                <item row="3" column="0">
+                 <widget class="QComboBox" name="comboBox_CONFIG1_PFD">
+                  <item>
+                   <property name="text">
+                    <string>12.5 %</string>
+                   </property>
+                  </item>
+                  <item>
+                   <property name="text">
+                    <string>25 %</string>
+                   </property>
+                  </item>
+                 </widget>
+                </item>
+                <item row="0" column="1">
+                 <widget class="QLabel" name="label_5">
+                  <property name="text">
+                   <string>CONFIG0_BT [3:0]</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="1" column="1">
+                 <widget class="QLineEdit" name="lineEdit_CONFIG0_BT"/>
+                </item>
+                <item row="25" column="1">
+                 <widget class="QComboBox" name="comboBox_RUN_BRK">
+                  <item>
+                   <property name="text">
+                    <string>Breake Function Disabled</string>
+                   </property>
+                  </item>
+                  <item>
+                   <property name="text">
+                    <string>Breake Enabled when PWM inactive</string>
+                   </property>
+                  </item>
+                 </widget>
+                </item>
+                <item row="10" column="0">
+                 <widget class="QLineEdit" name="lineEdit_CONFIG2_PW"/>
+                </item>
+                <item row="2" column="0">
+                 <widget class="QLabel" name="label_9">
+                  <property name="text">
+                   <string>CONFIG1_PFD</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="4" column="0">
+                 <widget class="QLabel" name="label_13">
+                  <property name="text">
+                   <string>CONFIG1_VDQ</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="7" column="0">
+                 <widget class="QLineEdit" name="lineEdit_CONFIG2_CP"/>
+                </item>
+                <item row="1" column="0">
+                 <widget class="QComboBox" name="comboBox_CONFIG0_RM">
+                  <item>
+                   <property name="text">
+                    <string>Auto</string>
+                   </property>
+                  </item>
+                  <item>
+                   <property name="text">
+                    <string>High</string>
+                   </property>
+                  </item>
+                  <item>
+                   <property name="text">
+                    <string>Low</string>
+                   </property>
+                  </item>
+                  <item>
+                   <property name="text">
+                    <string>Off</string>
+                   </property>
+                  </item>
+                 </widget>
+                </item>
+                <item row="7" column="2">
+                 <widget class="QComboBox" name="comboBox_CONFIG2_DGC">
+                  <item>
+                   <property name="text">
+                    <string>Off</string>
+                   </property>
+                  </item>
+                  <item>
+                   <property name="text">
+                    <string>Active</string>
+                   </property>
+                  </item>
+                 </widget>
+                </item>
+                <item row="13" column="0">
+                 <widget class="QLabel" name="label_22">
+                  <property name="text">
+                   <string>CONFIG3_CI[3:0]</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="0" column="2">
+                 <widget class="QLabel" name="label_6">
+                  <property name="text">
+                   <string>CONFIG0_DT[5:0]</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="19" column="0">
+                 <widget class="QLineEdit" name="lineEdit_CONFIG5_SI"/>
+                </item>
+                <item row="5" column="0">
+                 <widget class="QComboBox" name="comboBox_CONFIG1_VDQ">
+                  <item>
+                   <property name="text">
+                    <string>Debounce timer</string>
+                   </property>
+                  </item>
+                  <item>
+                   <property name="text">
+                    <string>Window timer</string>
+                   </property>
+                  </item>
+                 </widget>
+                </item>
+                <item row="14" column="2">
+                 <widget class="QLineEdit" name="lineEdit_CONFIG3_HT"/>
+                </item>
+                <item row="6" column="1">
+                 <widget class="QLabel" name="label_18">
+                  <property name="text">
+                   <string>CONFIG2_SH</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="19" column="1">
+                 <widget class="QComboBox" name="comboBox_CONFIG5_SPO">
+                  <item>
+                   <property name="text">
+                    <string>FG (electrical frequency)</string>
+                   </property>
+                  </item>
+                  <item>
+                   <property name="text">
+                    <string>TACHO (commutation frequency)</string>
+                   </property>
+                  </item>
+                 </widget>
+                </item>
+                <item row="3" column="1">
+                 <widget class="QComboBox" name="comboBox_CONFIG1_IPI">
+                  <item>
+                   <property name="text">
+                    <string>Normal true logic</string>
+                   </property>
+                  </item>
+                  <item>
+                   <property name="text">
+                    <string>Inverter logic</string>
+                   </property>
+                  </item>
+                 </widget>
+                </item>
+                <item row="16" column="2">
+                 <widget class="QLineEdit" name="lineEdit_CONFIG4_SS"/>
+                </item>
+                <item row="13" column="1">
+                 <widget class="QLabel" name="label_24">
+                  <property name="text">
+                   <string>CONFIG3_HD[3:0]</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="6" column="2">
+                 <widget class="QLabel" name="label_19">
+                  <property name="text">
+                   <string>CONFIG2_DGC</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="22" column="0">
+                 <widget class="QLabel" name="label_17">
+                  <property name="text">
+                   <string>RUN_CM[1:0]</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="24" column="0">
+                 <widget class="QLabel" name="label_23">
+                  <property name="text">
+                   <string>RUN_RSC</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="25" column="0">
+                 <widget class="QComboBox" name="comboBox_RUN_RSC">
+                  <item>
+                   <property name="text">
+                    <string>No restart</string>
+                   </property>
+                  </item>
+                  <item>
+                   <property name="text">
+                    <string>Allow restart after loss of sync</string>
+                   </property>
+                  </item>
+                 </widget>
+                </item>
+                <item row="24" column="2">
+                 <widget class="QLabel" name="label_29">
+                  <property name="text">
+                   <string>RUN_DIR</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="13" column="2">
+                 <widget class="QLabel" name="label_26">
+                  <property name="text">
+                   <string>CONFIG3_HT[3:0]</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="19" column="2">
+                 <widget class="QLineEdit" name="lineEdit_CONFIG5_SMX"/>
+                </item>
+                <item row="20" column="0">
+                 <widget class="QLabel" name="label_12">
+                  <property name="text">
+                   <string>CONFIG5_PA[3:0]</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="2" column="2">
+                 <widget class="QLabel" name="label_11">
+                  <property name="text">
+                   <string>CONFIG1_VIL [3:0]</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="26" column="0">
+                 <widget class="QLabel" name="label_31">
+                  <property name="text">
+                   <string>RUN_RUN</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="14" column="1">
+                 <widget class="QLineEdit" name="lineEdit_CONFIG3_HD"/>
+                </item>
+                <item row="9" column="0">
+                 <widget class="QLabel" name="label_20">
+                  <property name="text">
+                   <string>CONFIG2_PW[4:0]</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="16" column="1">
+                 <widget class="QLineEdit" name="lineEdit_CONFIG4_SD"/>
+                </item>
+                <item row="7" column="1">
+                 <widget class="QComboBox" name="comboBox_CONFIG2_SH">
+                  <item>
+                   <property name="text">
+                    <string>100% max control speed</string>
+                   </property>
+                  </item>
+                  <item>
+                   <property name="text">
+                    <string>125% max control speed</string>
+                   </property>
+                  </item>
+                  <item>
+                   <property name="text">
+                    <string>150% max control speed</string>
+                   </property>
+                  </item>
+                  <item>
+                   <property name="text">
+                    <string>200% max control speed</string>
+                   </property>
+                  </item>
+                 </widget>
+                </item>
+                <item row="23" column="0">
+                 <widget class="QComboBox" name="comboBox_RUN_CM">
+                  <item>
+                   <property name="text">
+                    <string>Indirect Speed (Duty Cycle)</string>
+                   </property>
+                  </item>
+                  <item>
+                   <property name="text">
+                    <string>Direct Speed (Duty Cycle)</string>
+                   </property>
+                  </item>
+                  <item>
+                   <property name="text">
+                    <string>Closed-loop Current</string>
+                   </property>
+                  </item>
+                  <item>
+                   <property name="text">
+                    <string>Closed-loop Speed</string>
+                   </property>
+                  </item>
+                 </widget>
+                </item>
+                <item row="16" column="0">
+                 <widget class="QLineEdit" name="lineEdit_CONFIG4_SP"/>
+                </item>
+                <item row="1" column="2">
+                 <widget class="QLineEdit" name="lineEdit_CONFIG0_DT"/>
+                </item>
+                <item row="18" column="0">
+                 <widget class="QLabel" name="label_34">
+                  <property name="text">
+                   <string>CONFIG5_SI[3:0]</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="24" column="1">
+                 <widget class="QLabel" name="label_27">
+                  <property name="text">
+                   <string>RUN_BRK</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="6" column="0">
+                 <widget class="QLabel" name="label_16">
+                  <property name="text">
+                   <string>CONFIG2_CP[3:0]</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="25" column="2">
+                 <widget class="QComboBox" name="comboBox_RUN_DIR">
+                  <item>
+                   <property name="text">
+                    <string>Forward</string>
+                   </property>
+                  </item>
+                  <item>
+                   <property name="text">
+                    <string>Reverse</string>
+                   </property>
+                  </item>
+                 </widget>
+                </item>
+                <item row="4" column="1">
+                 <widget class="QLabel" name="label_14">
+                  <property name="text">
+                   <string>CONFIG1_VT[4:0]</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="3" column="2">
+                 <widget class="QLineEdit" name="lineEdit_CONFIG1_VIL"/>
+                </item>
+                <item row="23" column="2">
+                 <widget class="QLineEdit" name="lineEdit_RUN_DI"/>
+                </item>
+                <item row="21" column="0">
+                 <widget class="QLineEdit" name="lineEdit_CONFIG5_PA"/>
+                </item>
+                <item row="23" column="1">
+                 <widget class="QComboBox" name="comboBox_RUN_ESF">
+                  <item>
+                   <property name="text">
+                    <string>No Stop on Fail. Report Fault</string>
+                   </property>
+                  </item>
+                  <item>
+                   <property name="text">
+                    <string>Stop on Fail. Report Fault</string>
+                   </property>
+                  </item>
+                 </widget>
+                </item>
+                <item row="2" column="1">
+                 <widget class="QLabel" name="label_10">
+                  <property name="text">
+                   <string>CONFIG1_IPI</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="15" column="0">
+                 <widget class="QLabel" name="label_28">
+                  <property name="text">
+                   <string>CONFIG4_SP[3:0]</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="15" column="2">
+                 <widget class="QLabel" name="label_32">
+                  <property name="text">
+                   <string>CONFIG4_SS[3:0]</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="14" column="0">
+                 <widget class="QLineEdit" name="lineEdit_CONFIG3_CI"/>
+                </item>
+                <item row="22" column="1">
+                 <widget class="QLabel" name="label_21">
+                  <property name="text">
+                   <string>RUN_ESF</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="15" column="1">
+                 <widget class="QLabel" name="label_30">
+                  <property name="text">
+                   <string>CONFIG4_SD[3:0]</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="22" column="2">
+                 <widget class="QLabel" name="label_25">
+                  <property name="text">
+                   <string>RUN_DI[4:0]</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="27" column="0">
+                 <widget class="QComboBox" name="comboBox_RUN_RUN">
+                  <item>
+                   <property name="text">
+                    <string>Disable outputs. Coast motor</string>
+                   </property>
+                  </item>
+                  <item>
+                   <property name="text">
+                    <string>Start and Run Motor</string>
+                   </property>
+                  </item>
+                 </widget>
+                </item>
+               </layout>
+              </widget>
+             </item>
+             <item row="2" column="1">
+              <widget class="QLabel" name="label_59">
+               <property name="text">
+                <string>I2C bitrate</string>
+               </property>
+              </widget>
+             </item>
+             <item row="0" column="1">
+              <widget class="QLabel" name="label_2">
+               <property name="text">
+                <string>Minor version</string>
+               </property>
+              </widget>
+             </item>
+             <item row="1" column="1">
+              <widget class="QLineEdit" name="lineEdit_versionMinor">
+               <property name="enabled">
+                <bool>false</bool>
+               </property>
+              </widget>
+             </item>
+             <item row="3" column="1">
+              <widget class="QLineEdit" name="lineEdit_I2C_bitrate"/>
+             </item>
+            </layout>
+           </widget>
+          </widget>
+         </item>
+        </layout>
+       </widget>
+       <widget class="QWidget" name="tab_2">
+        <attribute name="title">
+         <string>Status/Control</string>
+        </attribute>
+        <layout class="QHBoxLayout" name="horizontalLayout_3">
+         <item>
+          <widget class="QScrollArea" name="scrollArea_2">
+           <property name="widgetResizable">
+            <bool>true</bool>
+           </property>
+           <widget class="QWidget" name="scrollAreaWidgetContents_2">
+            <property name="geometry">
+             <rect>
+              <x>0</x>
+              <y>0</y>
+              <width>774</width>
+              <height>506</height>
+             </rect>
+            </property>
+            <layout class="QGridLayout" name="gridLayout_3">
+             <item row="5" column="0">
+              <spacer name="verticalSpacer_3">
+               <property name="orientation">
+                <enum>Qt::Vertical</enum>
+               </property>
+               <property name="sizeType">
+                <enum>QSizePolicy::Fixed</enum>
+               </property>
+               <property name="sizeHint" stdset="0">
+                <size>
+                 <width>20</width>
+                 <height>10</height>
+                </size>
+               </property>
+              </spacer>
+             </item>
+             <item row="3" column="2">
+              <widget class="QLabel" name="label_36">
+               <property name="text">
+                <string>Status Byte 3</string>
+               </property>
+              </widget>
+             </item>
+             <item row="16" column="1">
+              <widget class="QLabel" name="label_52">
+               <property name="text">
+                <string>Motor PWM2</string>
+               </property>
+              </widget>
+             </item>
+             <item row="8" column="1">
+              <widget class="QLCDNumber" name="lcdNumber_AccelRawY">
+               <property name="frameShadow">
+                <enum>QFrame::Sunken</enum>
+               </property>
+               <property name="digitCount">
+                <number>8</number>
+               </property>
+               <property name="segmentStyle">
+                <enum>QLCDNumber::Flat</enum>
+               </property>
+               <property name="value" stdset="0">
+                <double>0.000000000000000</double>
+               </property>
+              </widget>
+             </item>
+             <item row="12" column="0">
+              <spacer name="verticalSpacer_7">
+               <property name="orientation">
+                <enum>Qt::Vertical</enum>
+               </property>
+               <property name="sizeType">
+                <enum>QSizePolicy::Fixed</enum>
+               </property>
+               <property name="sizeHint" stdset="0">
+                <size>
+                 <width>20</width>
+                 <height>10</height>
+                </size>
+               </property>
+              </spacer>
+             </item>
+             <item row="18" column="0">
+              <spacer name="verticalSpacer_2">
+               <property name="orientation">
+                <enum>Qt::Vertical</enum>
+               </property>
+               <property name="sizeHint" stdset="0">
+                <size>
+                 <width>20</width>
+                 <height>40</height>
+                </size>
+               </property>
+              </spacer>
+             </item>
+             <item row="3" column="0">
+              <widget class="QLabel" name="label_33">
+               <property name="text">
+                <string>Status Byte 1</string>
+               </property>
+              </widget>
+             </item>
+             <item row="4" column="3">
+              <widget class="QLineEdit" name="lineEdit_Status_Byte_4">
+               <property name="enabled">
+                <bool>false</bool>
+               </property>
+              </widget>
+             </item>
+             <item row="4" column="2">
+              <widget class="QLineEdit" name="lineEdit_Status_Byte_3">
+               <property name="enabled">
+                <bool>false</bool>
+               </property>
+              </widget>
+             </item>
+             <item row="4" column="4">
+              <widget class="QLineEdit" name="lineEdit_Status_Byte_5">
+               <property name="enabled">
+                <bool>false</bool>
+               </property>
+              </widget>
+             </item>
+             <item row="17" column="0">
+              <widget class="QDoubleSpinBox" name="doubleSpinBox_Motor1">
+               <property name="enabled">
+                <bool>false</bool>
+               </property>
+               <property name="maximum">
+                <double>100.000000000000000</double>
+               </property>
+              </widget>
+             </item>
+             <item row="8" column="0">
+              <widget class="QLCDNumber" name="lcdNumber_AccelRawX">
+               <property name="frameShadow">
+                <enum>QFrame::Sunken</enum>
+               </property>
+               <property name="smallDecimalPoint">
+                <bool>false</bool>
+               </property>
+               <property name="digitCount">
+                <number>8</number>
+               </property>
+               <property name="mode">
+                <enum>QLCDNumber::Dec</enum>
+               </property>
+               <property name="segmentStyle">
+                <enum>QLCDNumber::Flat</enum>
+               </property>
+               <property name="value" stdset="0">
+                <double>0.000000000000000</double>
+               </property>
+              </widget>
+             </item>
+             <item row="8" column="5">
+              <widget class="QLCDNumber" name="lcdNumber_GyroRawZ">
+               <property name="frameShadow">
+                <enum>QFrame::Sunken</enum>
+               </property>
+               <property name="digitCount">
+                <number>8</number>
+               </property>
+               <property name="segmentStyle">
+                <enum>QLCDNumber::Flat</enum>
+               </property>
+               <property name="value" stdset="0">
+                <double>0.000000000000000</double>
+               </property>
+              </widget>
+             </item>
+             <item row="8" column="2">
+              <widget class="QLCDNumber" name="lcdNumber_AccelRawZ">
+               <property name="frameShadow">
+                <enum>QFrame::Sunken</enum>
+               </property>
+               <property name="digitCount">
+                <number>8</number>
+               </property>
+               <property name="segmentStyle">
+                <enum>QLCDNumber::Flat</enum>
+               </property>
+               <property name="value" stdset="0">
+                <double>0.000000000000000</double>
+               </property>
+              </widget>
+             </item>
+             <item row="6" column="0">
+              <widget class="QLabel" name="AccelRaw">
+               <property name="text">
+                <string>Accel Raw X</string>
+               </property>
+              </widget>
+             </item>
+             <item row="1" column="0" colspan="2">
+              <widget class="QCheckBox" name="checkBox_HWT">
+               <property name="enabled">
+                <bool>true</bool>
+               </property>
+               <property name="text">
+                <string>Hardware Test</string>
+               </property>
+               <property name="checkable">
+                <bool>true</bool>
+               </property>
+              </widget>
+             </item>
+             <item row="6" column="1">
+              <widget class="QLabel" name="label_40">
+               <property name="text">
+                <string>Accel Raw Y</string>
+               </property>
+              </widget>
+             </item>
+             <item row="4" column="5">
+              <widget class="QLineEdit" name="lineEdit_Status_Byte_6">
+               <property name="enabled">
+                <bool>false</bool>
+               </property>
+              </widget>
+             </item>
+             <item row="6" column="4">
+              <widget class="QLabel" name="label_43">
+               <property name="text">
+                <string>Gyro Raw Y</string>
+               </property>
+              </widget>
+             </item>
+             <item row="6" column="5">
+              <widget class="QLabel" name="label_44">
+               <property name="text">
+                <string>Gyro Raw Z</string>
+               </property>
+              </widget>
+             </item>
+             <item row="8" column="4">
+              <widget class="QLCDNumber" name="lcdNumber_GyroRawY">
+               <property name="frameShadow">
+                <enum>QFrame::Sunken</enum>
+               </property>
+               <property name="digitCount">
+                <number>8</number>
+               </property>
+               <property name="segmentStyle">
+                <enum>QLCDNumber::Flat</enum>
+               </property>
+               <property name="value" stdset="0">
+                <double>0.000000000000000</double>
+               </property>
+              </widget>
+             </item>
+             <item row="8" column="3">
+              <widget class="QLCDNumber" name="lcdNumber_GyroRawX">
+               <property name="frameShadow">
+                <enum>QFrame::Sunken</enum>
+               </property>
+               <property name="digitCount">
+                <number>8</number>
+               </property>
+               <property name="segmentStyle">
+                <enum>QLCDNumber::Flat</enum>
+               </property>
+               <property name="value" stdset="0">
+                <double>0.000000000000000</double>
+               </property>
+              </widget>
+             </item>
+             <item row="6" column="3">
+              <widget class="QLabel" name="label_42">
+               <property name="text">
+                <string>Gyro Raw X</string>
+               </property>
+              </widget>
+             </item>
+             <item row="6" column="2">
+              <widget class="QLabel" name="label_41">
+               <property name="text">
+                <string>Accel Raw Z</string>
+               </property>
+              </widget>
+             </item>
+             <item row="0" column="0">
+              <widget class="QLabel" name="label_45">
+               <property name="text">
+                <string>Ticks</string>
+               </property>
+              </widget>
+             </item>
+             <item row="1" column="2" colspan="2">
+              <widget class="QCheckBox" name="checkBox_Control">
+               <property name="enabled">
+                <bool>true</bool>
+               </property>
+               <property name="text">
+                <string>Control</string>
+               </property>
+               <property name="checkable">
+                <bool>true</bool>
+               </property>
+              </widget>
+             </item>
+             <item row="10" column="0">
+              <widget class="QLabel" name="label_46">
+               <property name="text">
+                <string>Compass Raw X</string>
+               </property>
+              </widget>
+             </item>
+             <item row="0" column="1">
+              <widget class="QLineEdit" name="lineEdit_Ticks">
+               <property name="enabled">
+                <bool>false</bool>
+               </property>
+              </widget>
+             </item>
+             <item row="10" column="1">
+              <widget class="QLabel" name="label_47">
+               <property name="text">
+                <string>Compass Raw Y</string>
+               </property>
+              </widget>
+             </item>
+             <item row="10" column="2">
+              <widget class="QLabel" name="label_48">
+               <property name="text">
+                <string>Compass Raw Z</string>
+               </property>
+              </widget>
+             </item>
+             <item row="11" column="1">
+              <widget class="QLCDNumber" name="lcdNumber_CompassRawY">
+               <property name="frameShadow">
+                <enum>QFrame::Sunken</enum>
+               </property>
+               <property name="digitCount">
+                <number>8</number>
+               </property>
+               <property name="segmentStyle">
+                <enum>QLCDNumber::Flat</enum>
+               </property>
+               <property name="value" stdset="0">
+                <double>0.000000000000000</double>
+               </property>
+              </widget>
+             </item>
+             <item row="1" column="4" colspan="2">
+              <widget class="QCheckBox" name="checkBox_ParamMode">
+               <property name="enabled">
+                <bool>true</bool>
+               </property>
+               <property name="text">
+                <string>Parametrization mode</string>
+               </property>
+               <property name="checkable">
+                <bool>true</bool>
+               </property>
+              </widget>
+             </item>
+             <item row="11" column="0">
+              <widget class="QLCDNumber" name="lcdNumber_CompassRawX">
+               <property name="frameShadow">
+                <enum>QFrame::Sunken</enum>
+               </property>
+               <property name="digitCount">
+                <number>8</number>
+               </property>
+               <property name="segmentStyle">
+                <enum>QLCDNumber::Flat</enum>
+               </property>
+               <property name="value" stdset="0">
+                <double>0.000000000000000</double>
+               </property>
+              </widget>
+             </item>
+             <item row="3" column="5">
+              <widget class="QLabel" name="label_39">
+               <property name="text">
+                <string>Status Byte 6</string>
+               </property>
+              </widget>
+             </item>
+             <item row="16" column="2">
+              <widget class="QLabel" name="label_53">
+               <property name="text">
+                <string>Motor PWM 3</string>
+               </property>
+              </widget>
+             </item>
+             <item row="4" column="0">
+              <widget class="QLineEdit" name="lineEdit_Status_Byte_1">
+               <property name="enabled">
+                <bool>false</bool>
+               </property>
+              </widget>
+             </item>
+             <item row="9" column="0">
+              <spacer name="verticalSpacer_4">
+               <property name="orientation">
+                <enum>Qt::Vertical</enum>
+               </property>
+               <property name="sizeType">
+                <enum>QSizePolicy::Fixed</enum>
+               </property>
+               <property name="sizeHint" stdset="0">
+                <size>
+                 <width>20</width>
+                 <height>10</height>
+                </size>
+               </property>
+              </spacer>
+             </item>
+             <item row="2" column="0">
+              <spacer name="verticalSpacer_5">
+               <property name="orientation">
+                <enum>Qt::Vertical</enum>
+               </property>
+               <property name="sizeType">
+                <enum>QSizePolicy::Fixed</enum>
+               </property>
+               <property name="sizeHint" stdset="0">
+                <size>
+                 <width>20</width>
+                 <height>10</height>
+                </size>
+               </property>
+              </spacer>
+             </item>
+             <item row="13" column="1">
+              <widget class="QLabel" name="label_56">
+               <property name="text">
+                <string>RC Yaw</string>
+               </property>
+              </widget>
+             </item>
+             <item row="4" column="1">
+              <widget class="QLineEdit" name="lineEdit_Status_Byte_2">
+               <property name="enabled">
+                <bool>false</bool>
+               </property>
+              </widget>
+             </item>
+             <item row="3" column="4">
+              <widget class="QLabel" name="label_38">
+               <property name="text">
+                <string>Status Byte 5</string>
+               </property>
+              </widget>
+             </item>
+             <item row="3" column="1">
+              <widget class="QLabel" name="label_35">
+               <property name="text">
+                <string>Status Byte 2</string>
+               </property>
+              </widget>
+             </item>
+             <item row="13" column="2">
+              <widget class="QLabel" name="label_57">
+               <property name="text">
+                <string>RC Pitch</string>
+               </property>
+              </widget>
+             </item>
+             <item row="3" column="3">
+              <widget class="QLabel" name="label_37">
+               <property name="text">
+                <string>Status Byte 4</string>
+               </property>
+              </widget>
+             </item>
+             <item row="13" column="3">
+              <widget class="QLabel" name="label_58">
+               <property name="text">
+                <string>RC Roll</string>
+               </property>
+              </widget>
+             </item>
+             <item row="17" column="2">
+              <widget class="QDoubleSpinBox" name="doubleSpinBox_Motor3">
+               <property name="enabled">
+                <bool>false</bool>
+               </property>
+               <property name="maximum">
+                <double>100.000000000000000</double>
+               </property>
+              </widget>
+             </item>
+             <item row="16" column="3">
+              <widget class="QLabel" name="label_54">
+               <property name="text">
+                <string>Motor PWM 4</string>
+               </property>
+              </widget>
+             </item>
+             <item row="17" column="3">
+              <widget class="QDoubleSpinBox" name="doubleSpinBox_Motor4">
+               <property name="enabled">
+                <bool>false</bool>
+               </property>
+               <property name="maximum">
+                <double>100.000000000000000</double>
+               </property>
+              </widget>
+             </item>
+             <item row="13" column="0">
+              <widget class="QLabel" name="label_55">
+               <property name="text">
+                <string>RC Gas</string>
+               </property>
+              </widget>
+             </item>
+             <item row="16" column="0">
+              <widget class="QLabel" name="label_51">
+               <property name="text">
+                <string>Motor PWM 1</string>
+               </property>
+              </widget>
+             </item>
+             <item row="15" column="0">
+              <spacer name="verticalSpacer_6">
+               <property name="orientation">
+                <enum>Qt::Vertical</enum>
+               </property>
+               <property name="sizeType">
+                <enum>QSizePolicy::Fixed</enum>
+               </property>
+               <property name="sizeHint" stdset="0">
+                <size>
+                 <width>20</width>
+                 <height>10</height>
+                </size>
+               </property>
+              </spacer>
+             </item>
+             <item row="17" column="1">
+              <widget class="QDoubleSpinBox" name="doubleSpinBox_Motor2">
+               <property name="enabled">
+                <bool>false</bool>
+               </property>
+               <property name="maximum">
+                <double>100.000000000000000</double>
+               </property>
+              </widget>
+             </item>
+             <item row="11" column="2">
+              <widget class="QLCDNumber" name="lcdNumber_CompassRawZ">
+               <property name="frameShadow">
+                <enum>QFrame::Sunken</enum>
+               </property>
+               <property name="digitCount">
+                <number>8</number>
+               </property>
+               <property name="segmentStyle">
+                <enum>QLCDNumber::Flat</enum>
+               </property>
+               <property name="value" stdset="0">
+                <double>0.000000000000000</double>
+               </property>
+              </widget>
+             </item>
+             <item row="10" column="4">
+              <widget class="QLabel" name="label_49">
+               <property name="text">
+                <string>Pressure</string>
+               </property>
+              </widget>
+             </item>
+             <item row="10" column="5">
+              <widget class="QLabel" name="label_50">
+               <property name="text">
+                <string>Temperature</string>
+               </property>
+              </widget>
+             </item>
+             <item row="11" column="5">
+              <widget class="QLCDNumber" name="lcdNumber_Temperature">
+               <property name="frameShadow">
+                <enum>QFrame::Sunken</enum>
+               </property>
+               <property name="digitCount">
+                <number>8</number>
+               </property>
+               <property name="segmentStyle">
+                <enum>QLCDNumber::Flat</enum>
+               </property>
+               <property name="value" stdset="0">
+                <double>0.000000000000000</double>
+               </property>
+              </widget>
+             </item>
+             <item row="11" column="4">
+              <widget class="QLCDNumber" name="lcdNumber_Pressure">
+               <property name="frameShadow">
+                <enum>QFrame::Sunken</enum>
+               </property>
+               <property name="digitCount">
+                <number>8</number>
+               </property>
+               <property name="segmentStyle">
+                <enum>QLCDNumber::Flat</enum>
+               </property>
+               <property name="value" stdset="0">
+                <double>0.000000000000000</double>
+               </property>
+              </widget>
+             </item>
+             <item row="14" column="0">
+              <widget class="QLCDNumber" name="lcdNumber_RCGas">
+               <property name="frameShadow">
+                <enum>QFrame::Sunken</enum>
+               </property>
+               <property name="digitCount">
+                <number>8</number>
+               </property>
+               <property name="segmentStyle">
+                <enum>QLCDNumber::Flat</enum>
+               </property>
+               <property name="value" stdset="0">
+                <double>0.000000000000000</double>
+               </property>
+              </widget>
+             </item>
+             <item row="14" column="1">
+              <widget class="QLCDNumber" name="lcdNumber_RCYaw">
+               <property name="frameShadow">
+                <enum>QFrame::Sunken</enum>
+               </property>
+               <property name="digitCount">
+                <number>8</number>
+               </property>
+               <property name="segmentStyle">
+                <enum>QLCDNumber::Flat</enum>
+               </property>
+               <property name="value" stdset="0">
+                <double>0.000000000000000</double>
+               </property>
+              </widget>
+             </item>
+             <item row="14" column="2">
+              <widget class="QLCDNumber" name="lcdNumber_RCPitch">
+               <property name="frameShadow">
+                <enum>QFrame::Sunken</enum>
+               </property>
+               <property name="digitCount">
+                <number>8</number>
+               </property>
+               <property name="segmentStyle">
+                <enum>QLCDNumber::Flat</enum>
+               </property>
+               <property name="value" stdset="0">
+                <double>0.000000000000000</double>
+               </property>
+              </widget>
+             </item>
+             <item row="14" column="3">
+              <widget class="QLCDNumber" name="lcdNumber_RCRoll">
+               <property name="frameShadow">
+                <enum>QFrame::Sunken</enum>
+               </property>
+               <property name="digitCount">
+                <number>8</number>
+               </property>
+               <property name="segmentStyle">
+                <enum>QLCDNumber::Flat</enum>
+               </property>
+               <property name="value" stdset="0">
+                <double>0.000000000000000</double>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </widget>
+          </widget>
+         </item>
+        </layout>
+       </widget>
+      </widget>
+     </item>
+    </layout>
+   </item>
+  </layout>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

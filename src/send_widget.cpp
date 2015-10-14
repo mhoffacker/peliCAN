@@ -60,6 +60,7 @@ void send_widget::send_data()
 
     int64_t id = ui->lineEdit_ID->text().toULong(&ok, 16);
 
+
     if ( !ok )
         return;
 

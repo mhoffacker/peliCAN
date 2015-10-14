@@ -23,6 +23,8 @@
 #include "dialograw2readable.h"
 #include "csignaldisplay.h"
 #include "dialogsignaleditor.h"
+#include "libcandbc/dbcReader.h"
+#include "ccanmessage.h"
 
 #include <QMessageBox>
 #include <QFileDialog>
@@ -54,6 +56,8 @@ MainWindow::MainWindow(QWidget *parent) :
 
     dialog_signal_tree = new DialogSignalTree(this);
     dialog_send_data = new DialogSendData(this);
+    dialog_quadi = new DialogQuadI(this);
+    dialog_dataview = new DialogDataView(this);
 }
 
 MainWindow::~MainWindow()
@@ -82,6 +86,47 @@ void MainWindow::can_received(const decoded_can_frame &frame)
     QString signal_name = "";
     bool matched = false;
 
+    foreach(CCANMessage *item, can_messages) {
+        if ( item->process_frame(frame, dialog_signal_tree->getUpdateRate()) ) {
+            signal_name = item->GetName();
+
+            dialog_dataview->UpdateMessage(item);
+
+            if ( !ui->checkBox_ShowAll->isChecked() ) {
+                // Update CAN msg list view
+                rt_model->insert_data(signal_name, frame);
+            }
+        }
+    }
+
+    if ( ui->checkBox_ShowAll->isChecked() ) {
+        // Update CAN msg list view
+        rt_model->insert_data(signal_name, frame);
+    }
+
+    // Update QuadI view
+    dialog_quadi->can_received(frame);
+
+    // Log data
+    if ( logging_active && log_stream)
+    {
+        *log_stream << frame.time_as_str << ';'
+                    << frame.can_id << ';'
+                    << frame.EFF << ';'
+                    << frame.ERR << ';'
+                    << frame.RTR << ';'
+                    << frame.can_dlc << ';'
+                    << frame.data[0] << ';'
+                    << frame.data[1] << ';'
+                    << frame.data[2] << ';'
+                    << frame.data[3] << ';'
+                    << frame.data[4] << ';'
+                    << frame.data[5] << ';'
+                    << frame.data[6] << ';'
+                    << frame.data[7] << endl;
+    }
+    return;
+
     // Search every signal
 
     foreach (CCANSignal* item_group, *can_signals_root->getChildren() )
@@ -101,6 +146,7 @@ void MainWindow::can_received(const decoded_can_frame &frame)
         }
     }
     dialog_signal_tree->getGraph()->update();
+
 
 
     foreach (CCANFilter* item, can_raw_view_filter) {
@@ -150,6 +196,7 @@ bool MainWindow::online(bool o, QString port)
             ui->action_Edit_signal_definition->setEnabled(false);
 
             dialog_send_data->setCanComm(can);
+            dialog_quadi->setCanComm(can);
             return true;
         } else {
             return false;
@@ -160,6 +207,7 @@ bool MainWindow::online(bool o, QString port)
             return false;
 
         dialog_send_data->setCanComm(NULL);
+        dialog_quadi->setCanComm(NULL);
 
         disconnect(can, SIGNAL(received(const decoded_can_frame&)),
                     this, SLOT(can_received(const decoded_can_frame&)));
@@ -613,11 +661,88 @@ bool MainWindow::XML_Read_Settings(QIODevice *device)
 
 void MainWindow::on_action_Load_signal_definition_triggered()
 {
-    QString fileName = QFileDialog::getOpenFileName(this, tr("Open Settings"), "", tr("XML Document (*.xml)"));
+    QString fileName = QFileDialog::getOpenFileName(this, tr("Open DBC file"), "", tr("CAN dbc (*.dbc)"));
 
     if ( fileName == "" )
         return;
 
+    //TODO: Replace with clean C++ code
+    char* s = new char[fileName.length()+1];
+    strcpy(s, fileName.toStdString().c_str());
+    dbc_t *dbc = dbc_read_file(s);
+    delete[] s;
+
+    if ( dbc == NULL ) {
+        QMessageBox msgBox;
+        msgBox.setText("Could not load signal definition file.");
+        msgBox.exec();
+        ui->label_signal_def->setText("Signal definition: None");
+        return;
+    }
+
+    dialog_dataview->ResetView();
+
+    message_list_t *msg_list = dbc->message_list;
+    while ( msg_list ) {
+
+        message_t *msg = msg_list->message;
+
+        CCANMessage *can_msg = new CCANMessage();
+        can_msg->SetName(msg->name);
+        can_msg->SetID(msg->id);
+        can_msg->SetSize(msg->len);
+        can_messages.append(can_msg);
+
+        signal_list_t *sig = msg->signal_list;
+        while ( sig ) {
+            //signedness 1 = signed
+            //endianess 0 = little
+
+            CCANSignal2 *new_sig = new CCANSignal2();
+            // 0 = integer
+            // 1 = 32bit float
+            // 2 = 64bit float
+            if ( sig->signal->signal_val_type == 0 ) {
+                if ( sig->signal->signedness == 1 ) {
+                    // signed
+                    new_sig->SetType(SIGNED_INT);
+                } else {
+                    new_sig->SetType(UNSIGNED_INT);
+                }
+            } else if ( sig->signal->signal_val_type == 1 ) {
+                new_sig->SetType(FLOAT32);
+            } else {
+                new_sig->SetType(FLOAT64);
+            }
+
+            if ( sig->signal->endianess == 1) {
+                new_sig->SetEndianess(ENDIAN_BIG);
+            } else {
+                new_sig->SetEndianess(ENDIAN_LITTLE);
+            }
+
+            new_sig->SetFactor(sig->signal->scale);
+            new_sig->SetLength(sig->signal->bit_len);
+            new_sig->SetMax(sig->signal->max);
+            new_sig->SetMin(sig->signal->min);
+            new_sig->SetOffset(sig->signal->offset);
+            new_sig->SetStartbit(sig->signal->bit_start);
+            new_sig->SetUnit(sig->signal->unit);
+            new_sig->SetName(sig->signal->name);
+
+            can_msg->AddSignal(new_sig);
+
+            sig = sig->next;
+        }
+
+        dialog_dataview->AddCANMessage(can_msg);
+
+        msg_list = msg_list->next;
+    }
+
+    ui->label_signal_def->setText("Signal definition: "+fileName);
+
+    return;
 
     QFile *file = new QFile(fileName);
     file->open(QIODevice::ReadOnly | QIODevice::Text);
@@ -758,6 +883,7 @@ void MainWindow::on_action_Data_Graph_triggered(bool checked)
     Q_UNUSED(checked);
 
     dialog_signal_tree->setVisible(!dialog_signal_tree->isVisible());
+    dialog_dataview->setVisible(!dialog_dataview->isVisible());
 }
 
 void MainWindow::on_action_RAW_csv_to_readable_csv_triggered()
@@ -879,4 +1005,9 @@ void MainWindow::on_action_Edit_signal_definition_triggered()
     DialogSignalEditor *e = new DialogSignalEditor(this);
     e->exec();
     delete e;
+}
+
+void MainWindow::on_actionQuadI_configurator_triggered()
+{
+    dialog_quadi->setVisible(!dialog_quadi->isVisible());
 }

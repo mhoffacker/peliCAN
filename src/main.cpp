@@ -25,6 +25,8 @@
 
 #include <iostream>
 
+#include "ccanmessage.h"
+
 Q_DECLARE_METATYPE(decoded_can_frame);
 
 int main(int argc, char *argv[])
@@ -32,6 +34,17 @@ int main(int argc, char *argv[])
     qRegisterMetaType<decoded_can_frame>("CANFrame");
 
     loadConfig();
+
+    double k = -10;
+    uint64_t b;
+    memcpy(&b, &k, sizeof(double));
+
+    CCANSignal2 test;
+    test.SetEndianess(ENDIAN_BIG);
+    test.SetStartbit(0);
+    test.SetLength(64);
+    test.SetType(FLOAT64);
+    test.CalcValue(b);
 
     QApplication a(argc, argv);
     MainWindow w;

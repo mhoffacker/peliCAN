@@ -22,6 +22,16 @@
       </property>
      </widget>
     </item>
+    <item row="0" column="0">
+     <widget class="QTreeView" name="treeView">
+      <property name="font">
+       <font>
+        <family>Fixed</family>
+        <pointsize>12</pointsize>
+       </font>
+      </property>
+     </widget>
+    </item>
     <item row="1" column="0">
      <widget class="QLabel" name="label_online">
       <property name="text">
@@ -36,13 +46,10 @@
       </property>
      </widget>
     </item>
-    <item row="0" column="0">
-     <widget class="QTreeView" name="treeView">
-      <property name="font">
-       <font>
-        <family>Fixed</family>
-        <pointsize>12</pointsize>
-       </font>
+    <item row="4" column="0">
+     <widget class="QCheckBox" name="checkBox_ShowAll">
+      <property name="text">
+       <string>Show all incomming messages</string>
       </property>
      </widget>
     </item>
@@ -54,7 +61,7 @@
      <x>0</x>
      <y>0</y>
      <width>962</width>
-     <height>22</height>
+     <height>19</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu_File">
@@ -71,6 +78,7 @@
     </property>
     <addaction name="action_Data_Graph"/>
     <addaction name="actionShow_Hide_send_signal"/>
+    <addaction name="actionQuadI_configurator"/>
    </widget>
    <widget class="QMenu" name="menu_Logging">
     <property name="title">
@@ -220,6 +228,11 @@
    </property>
    <property name="text">
     <string>Show/Hide send signal</string>
+   </property>
+  </action>
+  <action name="actionQuadI_configurator">
+   <property name="text">
+    <string>QuadI configurator</string>
    </property>
   </action>
  </widget>

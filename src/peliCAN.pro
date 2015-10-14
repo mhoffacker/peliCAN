@@ -17,12 +17,25 @@ MOC_DIR = moc
 OBJECTS_DIR = obj
 UI_DIR = ui
 
+# remove possible other optimization flags
+QMAKE_CXXFLAGS_RELEASE -= -O
+QMAKE_CXXFLAGS_RELEASE -= -O0
+QMAKE_CXXFLAGS_RELEASE -= -O1
+QMAKE_CXXFLAGS_RELEASE -= -O2
+QMAKE_CXXFLAGS_RELEASE -= -O3
+QMAKE_CXXFLAGS_RELEASE -= -Os
+
+# add the desired -O3 if not present
+QMAKE_CXXFLAGS_RELEASE *= -O0
+
 unix {
     DEFINES  += USE_SOCKET_CAN
+	DEFINES  += USE_QUADI
 }
 
 win32 {
     DEFINES  += __WINDOWS__
+	DEFINES  += USE_QUADI
     INCLUDEPATH += . c:\qwt-6.1.2\src
 }
 
@@ -46,7 +59,15 @@ SOURCES += main.cpp\
     send_widget.cpp \
     dialogsenddata.cpp \
     send_widget_special.cpp \
-    dialogsignaleditor.cpp
+    dialogsignaleditor.cpp \
+    dialogquadi.cpp \
+    libcandbc/dbcModel.c \
+    libcandbc/dbcReader.c \
+    libcandbc/dbcWriter.c \
+    libcandbc/lexer.c \
+    libcandbc/parser.c \
+    ccanmessage.cpp \
+    dialogdataview.cpp
 
 HEADERS  += mainwindow.h \
     csocketcan.h \
@@ -66,7 +87,15 @@ HEADERS  += mainwindow.h \
     send_widget.h \
     dialogsenddata.h \
     send_widget_special.h \
-    dialogsignaleditor.h
+    dialogsignaleditor.h \
+    dialogquadi.h \
+    libcandbc/dbcModel.h \
+    libcandbc/dbcReader.h \
+    libcandbc/dbcTypes.h \
+    libcandbc/dbcWriter.h \
+    libcandbc/parser.h \
+    ccanmessage.h \
+    dialogdataview.h
 
 FORMS    += mainwindow.ui \
     connectdialog.ui \
@@ -76,7 +105,9 @@ FORMS    += mainwindow.ui \
     send_widget.ui \
     dialogsenddata.ui \
     send_widget_special.ui \
-    dialogsignaleditor.ui
+    dialogsignaleditor.ui \
+    dialogquadi.ui \
+    dialogdataview.ui
 
 RESOURCES += \
     resources.qrc

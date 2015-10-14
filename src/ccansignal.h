@@ -27,6 +27,8 @@
 #include <QString>
 #include <QModelIndex>
 
+
+
 class CCANSignal;
 
 /*!
