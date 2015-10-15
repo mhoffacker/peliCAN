@@ -1,10 +1,25 @@
+/*
+ *peliCAN
+ *Copyright (C) 2014-2015 Michael Hoffacker, mhoffacker3@googlemail.com
+ *
+ *This program is free software: you can redistribute it and/or modify
+ *it under the terms of the GNU General Public License as published by
+ *the Free Software Foundation, either version 3 of the License, or
+ *(at your option) any later version.
+ *
+ *This program is distributed in the hope that it will be useful,
+ *but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ *GNU General Public License for more details.
+ *
+ *You should have received a copy of the GNU General Public License
+ *along with this program. If not, see <http://www.gnu.org/licenses/>.
+ */
+
 #ifndef CCANMESSAGE
 #define CCANMESSAGE
 
 #include "ccancomm.h"
-#include "ccanfilter.h"
-#include "csignaldisplay.h"
-#include "multi_plot.h"
 
 #include <QString>
 #include <QModelIndex>
@@ -84,7 +99,7 @@ public:
 
     void AddSignal(CCANSignal2 *sig) { m_list.append(sig); }
 
-    bool process_frame(const decoded_can_frame &frame, double update_rate_ms);
+    bool process_frame(const decoded_can_frame &frame);
 
     CANSignal2List *GetSignals() { return &m_list; }
 

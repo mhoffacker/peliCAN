@@ -4,11 +4,11 @@
 #
 #-------------------------------------------------
 
-QT       += core gui script 
-CONFIG	 += qwt
+QT       += core gui
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 greaterThan(QT_MAJOR_VERSION, 4): QT += serialport
+greaterThan(QT_MAJOR_VERSION, 4): QT += printsupport
 lessThan(QT_MAJOR_VERSION, 5): CONFIG += serialport
 
 TARGET = peliCAN
@@ -36,7 +36,6 @@ unix {
 win32 {
     DEFINES  += __WINDOWS__
 	DEFINES  += USE_QUADI
-    INCLUDEPATH += . c:\qwt-6.1.2\src
 }
 
 
@@ -45,21 +44,13 @@ SOURCES += main.cpp\
     csocketcan.cpp \
     ccancomm.cpp \
     connectdialog.cpp \
-    ccanfilter.cpp \
-    ccansignal.cpp \
     raw_tree_model.cpp \
     aboutdialog.cpp \
-    signal_tree_model.cpp \
-    dialogsignaltree.cpp \
-    csignaldisplay.cpp \
-    dialograw2readable.cpp \
-    multi_plot.cpp \
     cslcan.cpp \
     global_config.cpp \
     send_widget.cpp \
     dialogsenddata.cpp \
     send_widget_special.cpp \
-    dialogsignaleditor.cpp \
     dialogquadi.cpp \
     libcandbc/dbcModel.c \
     libcandbc/dbcReader.c \
@@ -74,21 +65,13 @@ HEADERS  += mainwindow.h \
     csocketcan.h \
     ccancomm.h \
     connectdialog.h \
-    ccanfilter.h \
-    ccansignal.h \
     raw_tree_model.h \
     aboutdialog.h \
-    signal_tree_model.h \
-    dialogsignaltree.h \
-    csignaldisplay.h \
-    dialograw2readable.h \
-    multi_plot.h \
     cslcan.h \
     global_config.h \
     send_widget.h \
     dialogsenddata.h \
     send_widget_special.h \
-    dialogsignaleditor.h \
     dialogquadi.h \
     libcandbc/dbcModel.h \
     libcandbc/dbcReader.h \
@@ -102,12 +85,9 @@ HEADERS  += mainwindow.h \
 FORMS    += mainwindow.ui \
     connectdialog.ui \
     aboutdialog.ui \
-    dialogsignaltree.ui \
-    dialograw2readable.ui \
     send_widget.ui \
     dialogsenddata.ui \
     send_widget_special.ui \
-    dialogsignaleditor.ui \
     dialogquadi.ui \
     dialogdataview.ui
 

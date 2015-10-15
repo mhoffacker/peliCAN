@@ -42,7 +42,7 @@
     <item row="3" column="0">
      <widget class="QLabel" name="label_signal_def">
       <property name="text">
-       <string>Signal definition: None, accepting nothing in raw-view.</string>
+       <string>Signal definition: None</string>
       </property>
      </widget>
     </item>
@@ -61,7 +61,7 @@
      <x>0</x>
      <y>0</y>
      <width>962</width>
-     <height>19</height>
+     <height>21</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu_File">
@@ -85,14 +85,12 @@
      <string>&amp;Logging</string>
     </property>
     <addaction name="action_Logging_Active"/>
-    <addaction name="action_RAW_csv_to_readable_csv"/>
    </widget>
    <widget class="QMenu" name="menu_Signals">
     <property name="title">
      <string>&amp;Signals</string>
     </property>
     <addaction name="action_Load_signal_definition"/>
-    <addaction name="action_Edit_signal_definition"/>
    </widget>
    <widget class="QMenu" name="menu_Help">
     <property name="title">

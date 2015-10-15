@@ -16,6 +16,24 @@
  *along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+/*
+ *peliCAN
+ *Copyright (C) 2014-2015 Michael Hoffacker, mhoffacker3@googlemail.com
+ *
+ *This program is free software: you can redistribute it and/or modify
+ *it under the terms of the GNU General Public License as published by
+ *the Free Software Foundation, either version 3 of the License, or
+ *(at your option) any later version.
+ *
+ *This program is distributed in the hope that it will be useful,
+ *but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ *GNU General Public License for more details.
+ *
+ *You should have received a copy of the GNU General Public License
+ *along with this program. If not, see <http://www.gnu.org/licenses/>.
+ */
+
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
@@ -27,11 +45,7 @@
 
 #include "ccancomm.h"
 #include "csocketcan.h"
-#include "ccanfilter.h"
-#include "ccansignal.h"
 #include "raw_tree_model.h"
-#include "signal_tree_model.h"
-#include "dialogsignaltree.h"
 #include "dialogsenddata.h"
 #include "send_widget_special.h"
 #include "dialogquadi.h"
@@ -67,13 +81,9 @@ private slots:
 
     void on_action_Data_Graph_triggered(bool checked);
 
-    void on_action_RAW_csv_to_readable_csv_triggered();
-
     void on_actionShow_Hide_send_signal_triggered();
 
     void on_action_Help_triggered();
-
-    void on_action_Edit_signal_definition_triggered();
 
     void on_actionQuadI_configurator_triggered();
 
@@ -81,32 +91,17 @@ private:
     Ui::MainWindow *ui;
 
     CCanComm *can;
-    CCANSignal *can_signals_root;
-    QList<CCANFilter*> can_raw_view_filter;
 
     QList<CCANMessage*> can_messages;
 
     raw_tree_model *rt_model;
-    signal_tree_model *st_model;
 
-    DialogSignalTree *dialog_signal_tree;
     DialogSendData *dialog_send_data;
     DialogQuadI *dialog_quadi;
     DialogDataView *dialog_dataview;
 
-
-    QHash<QString, CAxis*> AxisHash;
-    bool XML_Read_Settings(QIODevice* device);
-    void XML_Read_Raw_View(QXmlStreamReader &xmlStream);
-    void XML_Read_Scales(QXmlStreamReader &xmlStream);
-    void XML_Read_Sender(QXmlStreamReader &xmlStream);
-    void XML_Read_Signal(CCANSignal* sig_group, QXmlStreamReader &xmlStream);
-    void XML_Attr_To_Filter(CCANFilter *filter, QXmlStreamAttributes &attributes);
-
     bool online(bool o, QString port);
     bool log(bool l, QString fileName = "");
-
-    void clear_can_raw_view_filter();
 
     QFile* logfile;
     QTextStream* log_stream;
