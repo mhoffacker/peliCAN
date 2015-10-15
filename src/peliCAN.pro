@@ -67,7 +67,8 @@ SOURCES += main.cpp\
     libcandbc/lexer.c \
     libcandbc/parser.c \
     ccanmessage.cpp \
-    dialogdataview.cpp
+    dialogdataview.cpp \
+    qcustomplot.cpp
 
 HEADERS  += mainwindow.h \
     csocketcan.h \
@@ -95,7 +96,8 @@ HEADERS  += mainwindow.h \
     libcandbc/dbcWriter.h \
     libcandbc/parser.h \
     ccanmessage.h \
-    dialogdataview.h
+    dialogdataview.h \
+    qcustomplot.h
 
 FORMS    += mainwindow.ui \
     connectdialog.ui \

@@ -3,7 +3,10 @@
 
 #include <QDialog>
 #include <QTreeWidget>
-#include <ccanmessage.h>
+#include <QMessageBox>
+
+#include "qcustomplot.h"
+#include "ccanmessage.h"
 
 
 
@@ -18,19 +21,23 @@ struct InternalData {
     int8_t Progress;
     CCANMessage *can_msg;
     CCANSignal2 *can_sig;
-
-    // Todo: Add plot here
+    QCPGraph *graph;
 };
 
-class QTreeWidgetItemIntData : public QTreeWidgetItem
+class QTreeWidgetItemIntData : public QObject, public QTreeWidgetItem
 {
-
+    Q_OBJECT
 public:
     explicit QTreeWidgetItemIntData(QTreeWidgetItem *parent);
     ~QTreeWidgetItemIntData();
 
     void SetInternalData(InternalData *data) { m_InternalData = data; }
     InternalData *GetInternalData() { return m_InternalData; }
+
+    void setData(int column, int role, const QVariant& value);
+
+signals:
+    void itemCheckStateChanged(QTreeWidgetItemIntData *item, bool checked);
 
 private:
     InternalData *m_InternalData;
@@ -47,6 +54,9 @@ public:
     void AddCANMessage(CCANMessage *msg);
     void UpdateMessage(CCANMessage *msg);
     void ResetView();
+
+public slots:
+    void itemCheckStateChanged(QTreeWidgetItemIntData *item, bool checked);
 
 private:
     Ui::DialogDataView *ui;

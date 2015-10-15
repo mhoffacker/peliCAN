@@ -37,7 +37,7 @@ bool CCANMessage::process_frame(const decoded_can_frame &frame, double update_ra
         item->CalcValue(data);
     }
 
-    m_timestamp = (frame.tv_ioctl.tv_sec + ((double)frame.tv_ioctl.tv_usec)/1000000.0) / 1000;
+    m_timestamp = (frame.tv_ioctl.tv_sec + ((double)frame.tv_ioctl.tv_usec)/1000000.0) * 1000;
 
     return true;
 }
